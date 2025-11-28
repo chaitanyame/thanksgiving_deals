@@ -1,0 +1,36 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Documentation
+README.md
+*.md
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (don't copy into image)
+Dockerfile
+docker-compose.yml
+.dockerignore

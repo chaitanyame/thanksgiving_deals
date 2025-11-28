@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slickdeals Black Friday Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Slickdeals Black Friday Deals Tracker</h1>
+            <p class="subtitle">Browse and filter all the latest deals</p>
+        </header>
+
+        <div class="last-updated">
+            <p>Last Updated: <span id="lastUpdated">Loading...</span></p>
+            <p class="deal-count">Showing <span id="dealCount">0</span> deals</p>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="mainCategoryFilter">Main Category:</label>
+                <select id="mainCategoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="subCategoryFilter">Sub Category:</label>
+                <select id="subCategoryFilter">
+                    <option value="">All Sub Categories</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="searchInput">Search:</label>
+                <input type="text" id="searchInput" placeholder="Search deals...">
+            </div>
+
+            <div class="filter-group">
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="date-desc">Newest First</option>
+                    <option value="date-asc">Oldest First</option>
+                    <option value="price-asc">Price (Low to High)</option>
+                    <option value="price-desc">Price (High to Low)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button id="prevPage" class="pagination-btn" disabled>← Previous</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button id="nextPage" class="pagination-btn" disabled>Next →</button>
+            <select id="itemsPerPage" class="items-per-page">
+                <option value="50">50 per page</option>
+                <option value="100" selected>100 per page</option>
+                <option value="250">250 per page</option>
+                <option value="500">500 per page</option>
+            </select>
+        </div>
+
+        <div id="loadingSpinner" class="loading">
+            <div class="spinner"></div>
+            <p>Loading deals...</p>
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No deals found. Try adjusting your filters.</p>
+        </div>
+
+        <table id="dealsTable" class="deals-table">
+            <thead>
+                <tr>
+                    <th>Main Category</th>
+                    <th>Sub Category</th>
+                    <th>Item / Product</th>
+                    <th>Original Price</th>
+                    <th>Sale Price</th>
+                    <th>Store</th>
+                    <th>Sale Period</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody id="dealsTableBody">
+            </tbody>
+        </table>
+
+        <footer>
+            <p>Deals updated every 30 minutes from <a href="https://slickdeals.net" target="_blank">Slickdeals</a></p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
