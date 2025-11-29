@@ -7,7 +7,7 @@ Merges deals from Google Sheets with new deals from RSS feed
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import feedparser
@@ -452,7 +452,7 @@ def main():
     
     # Save to file
     data = {
-        'lastUpdated': datetime.utcnow().isoformat() + 'Z',
+        'lastUpdated': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
         'deals': all_deals
     }
     
