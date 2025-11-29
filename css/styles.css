@@ -238,6 +238,12 @@ header .subtitle {
     font-style: italic;
 }
 
+.published-date {
+    color: #888;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
 .date {
     color: #999;
     font-size: 0.85rem;

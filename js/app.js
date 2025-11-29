@@ -346,6 +346,14 @@ function renderDeals() {
         }
         row.appendChild(notesCell);
 
+        // Published Date
+        const publishedCell = document.createElement('td');
+        if (deal.pubDate) {
+            publishedCell.textContent = formatDate(deal.pubDate);
+            publishedCell.classList.add('published-date');
+        }
+        row.appendChild(publishedCell);
+
         fragment.appendChild(row);
     });
 
