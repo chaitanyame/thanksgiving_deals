@@ -4,7 +4,13 @@ name: Deploy to GitHub Pages
 on:
   # Run on pushes to main branch
   push:
-    branches: ["mvp_0.1"]
+    branches: ["main"]
+  
+  # Trigger after sync workflow completes
+  workflow_run:
+    workflows: ["Sync Slickdeals Deals"]
+    types:
+      - completed
   
   # Allow manual trigger
   workflow_dispatch:
