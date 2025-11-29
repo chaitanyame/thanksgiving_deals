@@ -53,6 +53,19 @@
             </div>
         </div>
 
+        <!-- Quick Filters -->
+        <div class="quick-filters" id="quickFilters">
+            <span class="quick-filter-label">Quick:</span>
+            <button class="quick-filter-btn" data-category="Electronics">🖥️ Electronics</button>
+            <button class="quick-filter-btn" data-category="Video Games">🎮 Gaming</button>
+            <button class="quick-filter-btn" data-category="Home & Home Improvement">🏠 Home</button>
+            <button class="quick-filter-btn" data-category="Clothing & Accessories">👕 Fashion</button>
+            <button class="quick-filter-btn" data-price="25">💰 Under $25</button>
+            <button class="quick-filter-btn" data-price="50">💵 Under $50</button>
+            <button class="quick-filter-btn" data-price="100">💲 Under $100</button>
+            <button class="quick-filter-btn clear-filters" id="clearFilters">✕ Clear</button>
+        </div>
+
         <div class="pagination">
             <button id="prevPage" class="pagination-btn" disabled>← Previous</button>
             <span id="pageInfo">Page 1 of 1</span>
@@ -101,6 +114,9 @@
             <p>Deals updated every 30 minutes from <a href="https://slickdeals.net" target="_blank">Slickdeals</a></p>
         </footer>
     </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
     <script src="js/app.js"></script>
 </body>

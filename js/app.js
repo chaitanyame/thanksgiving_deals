@@ -506,15 +506,150 @@ function setupEventListeners() {
     mainCategoryFilter.addEventListener('change', () => {
         subCategoryFilter.value = '';
         populateSubCategoryFilter();
+        clearQuickFilterActive();
         applyFilters();
     });
 
-    subCategoryFilter.addEventListener('change', applyFilters);
+    subCategoryFilter.addEventListener('change', () => {
+        clearQuickFilterActive();
+        applyFilters();
+    });
     searchInput.addEventListener('input', debouncedSearch); // Use debounced version
     sortBy.addEventListener('change', applyFilters);
     prevPageBtn.addEventListener('click', previousPage);
     nextPageBtn.addEventListener('click', nextPage);
     itemsPerPageSelect.addEventListener('change', changeItemsPerPage);
+
+    // Quick filter buttons
+    document.querySelectorAll('.quick-filter-btn').forEach(btn => {
+        btn.addEventListener('click', handleQuickFilter);
+    });
+
+    // Back to top button and scroll events
+    const backToTopBtn = document.getElementById('backToTop');
+    const filtersSection = document.querySelector('.filters');
+    let filtersOffsetTop = filtersSection ? filtersSection.offsetTop : 0;
+
+    window.addEventListener('scroll', () => {
+        // Show/hide back to top button
+        if (window.scrollY > 400) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+
+        // Sticky filter bar (only on desktop)
+        if (!isMobile() && filtersSection) {
+            if (window.scrollY > filtersOffsetTop + 100) {
+                if (!filtersSection.classList.contains('sticky')) {
+                    filtersSection.classList.add('sticky');
+                    // Create placeholder to prevent content jump
+                    let placeholder = document.querySelector('.filters-placeholder');
+                    if (!placeholder) {
+                        placeholder = document.createElement('div');
+                        placeholder.className = 'filters-placeholder';
+                        placeholder.style.height = filtersSection.offsetHeight + 'px';
+                        filtersSection.parentNode.insertBefore(placeholder, filtersSection.nextSibling);
+                    }
+                    placeholder.classList.add('active');
+                }
+            } else {
+                filtersSection.classList.remove('sticky');
+                const placeholder = document.querySelector('.filters-placeholder');
+                if (placeholder) {
+                    placeholder.classList.remove('active');
+                }
+            }
+        }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+/**
+ * Handle quick filter button clicks
+ */
+function handleQuickFilter(e) {
+    const btn = e.target;
+    
+    // Handle clear button
+    if (btn.classList.contains('clear-filters')) {
+        clearAllFilters();
+        return;
+    }
+    
+    // Clear all active states
+    clearQuickFilterActive();
+    btn.classList.add('active');
+    
+    if (btn.dataset.category) {
+        // Category quick filter
+        mainCategoryFilter.value = btn.dataset.category;
+        subCategoryFilter.value = '';
+        searchInput.value = '';
+        populateSubCategoryFilter();
+        applyFilters();
+    } else if (btn.dataset.price) {
+        // Price quick filter - filter deals under X price
+        const maxPrice = parseInt(btn.dataset.price);
+        mainCategoryFilter.value = '';
+        subCategoryFilter.value = '';
+        searchInput.value = '';
+        populateSubCategoryFilter();
+        applyFiltersWithMaxPrice(maxPrice);
+    }
+}
+
+/**
+ * Clear active state from quick filter buttons
+ */
+function clearQuickFilterActive() {
+    document.querySelectorAll('.quick-filter-btn').forEach(b => {
+        if (!b.classList.contains('clear-filters')) {
+            b.classList.remove('active');
+        }
+    });
+}
+
+/**
+ * Clear all filters
+ */
+function clearAllFilters() {
+    mainCategoryFilter.value = '';
+    subCategoryFilter.value = '';
+    searchInput.value = '';
+    clearQuickFilterActive();
+    populateSubCategoryFilter();
+    applyFilters();
+}
+
+/**
+ * Apply filters with max price constraint
+ */
+function applyFiltersWithMaxPrice(maxPrice) {
+    const selectedMainCategory = mainCategoryFilter.value;
+    const selectedSubCategory = subCategoryFilter.value;
+    
+    filteredDeals = allDeals.filter(deal => {
+        // Main category filter
+        if (selectedMainCategory && deal.mainCategory !== selectedMainCategory) {
+            return false;
+        }
+        // Sub category filter
+        if (selectedSubCategory && deal.subCategory !== selectedSubCategory) {
+            return false;
+        }
+        // Price filter
+        const price = extractNumericPrice(deal.salePrice);
+        return price !== null && price <= maxPrice;
+    });
+    
+    sortDeals(sortBy.value);
+    dealCountSpan.textContent = filteredDeals.length;
+    currentPage = 1;
+    renderDeals();
 }
 
 /**
