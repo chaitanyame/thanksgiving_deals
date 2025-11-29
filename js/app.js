@@ -6,6 +6,14 @@ let currentPage = 1;
 let itemsPerPage = 100;
 let searchDebounceTimer = null;
 
+// Helper function to decode HTML entities
+function decodeHTMLEntities(text) {
+    if (!text) return text;
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+}
+
 // Virtual Scrolling State
 let virtualScrollEnabled = false;
 let rowHeight = 60; // Estimated row height in pixels
@@ -238,7 +246,7 @@ function populateMainCategoryFilter() {
     sortedCategories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
-        option.textContent = category;
+        option.textContent = decodeHTMLEntities(category);
         fragment.appendChild(option);
     });
     mainCategoryFilter.appendChild(fragment);
@@ -274,7 +282,7 @@ function populateSubCategoryFilter() {
     sortedSubCategories.forEach(subCategory => {
         const option = document.createElement('option');
         option.value = subCategory;
-        option.textContent = subCategory;
+        option.textContent = decodeHTMLEntities(subCategory);
         fragment.appendChild(option);
     });
     subCategoryFilter.appendChild(fragment);
@@ -416,17 +424,22 @@ function renderDeals() {
 
     // Render only visible deals
     dealsToRender.forEach(deal => {
+        // Decode HTML entities in category names
+        const mainCat = decodeHTMLEntities(deal.mainCategory) || '';
+        const subCat = decodeHTMLEntities(deal.subCategory) || '';
+        const title = decodeHTMLEntities(deal.title) || 'No title';
+        
         // === TABLE ROW (Desktop) ===
         const row = document.createElement('tr');
 
         // Main Category
         const mainCategoryCell = document.createElement('td');
-        mainCategoryCell.textContent = deal.mainCategory || '';
+        mainCategoryCell.textContent = mainCat;
         row.appendChild(mainCategoryCell);
 
         // Sub Category
         const subCategoryCell = document.createElement('td');
-        subCategoryCell.textContent = deal.subCategory || '';
+        subCategoryCell.textContent = subCat;
         row.appendChild(subCategoryCell);
 
         // Item / Product (with link and optional lazy image)
@@ -438,7 +451,7 @@ function renderDeals() {
         
         const titleLink = document.createElement('a');
         titleLink.href = deal.link || '#';
-        titleLink.textContent = deal.title || 'No title';
+        titleLink.textContent = title;
         titleLink.target = '_blank';
         titleLink.rel = 'noopener noreferrer';
         titleWrapper.appendChild(titleLink);
@@ -546,7 +559,7 @@ function renderDeals() {
         cardTitle.className = 'deal-card-title';
         const cardLink = document.createElement('a');
         cardLink.href = deal.link || '#';
-        cardLink.textContent = deal.title || 'No title';
+        cardLink.textContent = title;
         cardLink.target = '_blank';
         cardLink.rel = 'noopener noreferrer';
         cardTitle.appendChild(cardLink);
@@ -570,10 +583,10 @@ function renderDeals() {
         const cardMeta = document.createElement('div');
         cardMeta.className = 'deal-card-meta';
 
-        if (deal.mainCategory) {
+        if (mainCat) {
             const catTag = document.createElement('span');
             catTag.className = 'deal-card-tag category';
-            catTag.textContent = deal.mainCategory;
+            catTag.textContent = mainCat;
             cardMeta.appendChild(catTag);
         }
 
@@ -1041,12 +1054,17 @@ function createVirtualRow(deal, index) {
     row.style.height = `${rowHeight}px`;
     row.dataset.index = index;
     
+    // Decode HTML entities
+    const decodedMainCategory = decodeHTMLEntities(deal.mainCategory || '');
+    const decodedSubCategory = decodeHTMLEntities(deal.subCategory || '');
+    const decodedTitle = decodeHTMLEntities(deal.title || 'No title');
+    
     // Main content
     row.innerHTML = `
-        <div class="vr-cell vr-category">${deal.mainCategory || ''}</div>
-        <div class="vr-cell vr-subcategory">${deal.subCategory || ''}</div>
+        <div class="vr-cell vr-category">${decodedMainCategory}</div>
+        <div class="vr-cell vr-subcategory">${decodedSubCategory}</div>
         <div class="vr-cell vr-title">
-            <a href="${deal.link || '#'}" target="_blank" rel="noopener noreferrer">${deal.title || 'No title'}</a>
+            <a href="${deal.link || '#'}" target="_blank" rel="noopener noreferrer">${decodedTitle}</a>
             ${deal.image ? `<img data-src="${deal.image}" alt="" class="deal-thumb lazy-image" loading="lazy">` : ''}
         </div>
         <div class="vr-cell vr-original-price ${deal.originalPrice ? 'has-price' : ''}">${deal.originalPrice || ''}</div>
