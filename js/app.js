@@ -169,8 +169,15 @@ async function loadDeals() {
         // Pre-index categories for instant filtering
         buildCategoryIndex();
 
-        // Update last updated time
-        if (data.lastUpdated) {
+        // Update last updated time - use newest deal's pubDate for consistency
+        if (allDeals.length > 0 && allDeals[0].pubDate) {
+            // Find the newest deal by pubDate
+            const newestDeal = allDeals.reduce((newest, deal) => {
+                if (!deal.pubDate) return newest;
+                return new Date(deal.pubDate) > new Date(newest.pubDate) ? deal : newest;
+            }, allDeals[0]);
+            lastUpdatedSpan.textContent = formatDate(newestDeal.pubDate);
+        } else if (data.lastUpdated) {
             lastUpdatedSpan.textContent = formatDate(data.lastUpdated);
         }
 
