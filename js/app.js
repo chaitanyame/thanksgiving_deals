@@ -34,7 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function loadDeals() {
     try {
-        const response = await fetch('data/deals.json');
+        // Add cache-busting timestamp to always get fresh data
+        const cacheBuster = new Date().getTime();
+        const response = await fetch(`data/deals.json?v=${cacheBuster}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
