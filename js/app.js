@@ -6,6 +6,74 @@ let currentPage = 1;
 let itemsPerPage = 100;
 let searchDebounceTimer = null;
 
+// Virtual Scrolling State
+let virtualScrollEnabled = false;
+let rowHeight = 60; // Estimated row height in pixels
+let visibleRowCount = 20;
+let bufferRows = 5;
+let scrollContainer = null;
+let virtualScrollWrapper = null;
+let lastScrollTop = 0;
+let scrollRAF = null;
+
+// Lazy Loading State
+let imageObserver = null;
+
+// Pull-to-refresh State
+let pullToRefreshEnabled = false;
+let pullStartY = 0;
+let pullMoveY = 0;
+let isPulling = false;
+let pullThreshold = 80;
+
+// Swipe Navigation State
+let touchStartX = 0;
+let touchStartY = 0;
+let swipeThreshold = 100;
+
+// Store Brand Colors
+const storeBrands = {
+    'amazon': { color: '#FF9900', bg: '#FFF3E0', icon: '📦' },
+    'walmart': { color: '#0071DC', bg: '#E3F2FD', icon: '🏪' },
+    'target': { color: '#CC0000', bg: '#FFEBEE', icon: '🎯' },
+    'best buy': { color: '#0046BE', bg: '#E8EAF6', icon: '💻' },
+    'bestbuy': { color: '#0046BE', bg: '#E8EAF6', icon: '💻' },
+    'costco': { color: '#E31837', bg: '#FCE4EC', icon: '🛒' },
+    'home depot': { color: '#F96302', bg: '#FFF3E0', icon: '🔨' },
+    'lowes': { color: '#004990', bg: '#E3F2FD', icon: '🔧' },
+    "lowe's": { color: '#004990', bg: '#E3F2FD', icon: '🔧' },
+    'newegg': { color: '#FF6600', bg: '#FFF3E0', icon: '🖥️' },
+    'ebay': { color: '#E53238', bg: '#FFEBEE', icon: '🏷️' },
+    'apple': { color: '#555555', bg: '#F5F5F5', icon: '🍎' },
+    'samsung': { color: '#1428A0', bg: '#E8EAF6', icon: '📱' },
+    'dell': { color: '#007DB8', bg: '#E3F2FD', icon: '💼' },
+    'hp': { color: '#0096D6', bg: '#E3F2FD', icon: '🖨️' },
+    'lenovo': { color: '#E2231A', bg: '#FFEBEE', icon: '💻' },
+    'microsoft': { color: '#00A4EF', bg: '#E3F2FD', icon: '🪟' },
+    'gamestop': { color: '#000000', bg: '#F5F5F5', icon: '🎮' },
+    'staples': { color: '#CC0000', bg: '#FFEBEE', icon: '📎' },
+    'office depot': { color: '#CC0000', bg: '#FFEBEE', icon: '📋' },
+    'kohls': { color: '#000000', bg: '#F5F5F5', icon: '👕' },
+    "kohl's": { color: '#000000', bg: '#F5F5F5', icon: '👕' },
+    'macys': { color: '#E21A2C', bg: '#FFEBEE', icon: '🛍️' },
+    "macy's": { color: '#E21A2C', bg: '#FFEBEE', icon: '🛍️' },
+    'nordstrom': { color: '#000000', bg: '#F5F5F5', icon: '👗' },
+    'jcpenney': { color: '#D32F2F', bg: '#FFEBEE', icon: '🏬' },
+    'sephora': { color: '#000000', bg: '#F5F5F5', icon: '💄' },
+    'ulta': { color: '#E91E63', bg: '#FCE4EC', icon: '💅' },
+    'wayfair': { color: '#7B189F', bg: '#F3E5F5', icon: '🛋️' },
+    'ikea': { color: '#0051BA', bg: '#E3F2FD', icon: '🪑' },
+    'nike': { color: '#000000', bg: '#F5F5F5', icon: '👟' },
+    'adidas': { color: '#000000', bg: '#F5F5F5', icon: '👟' },
+    'b&h': { color: '#000000', bg: '#F5F5F5', icon: '📸' },
+    'adorama': { color: '#D32F2F', bg: '#FFEBEE', icon: '📷' },
+    'sams club': { color: '#0067A0', bg: '#E3F2FD', icon: '🛒' },
+    "sam's club": { color: '#0067A0', bg: '#E3F2FD', icon: '🛒' },
+    'bjs': { color: '#D32F2F', bg: '#FFEBEE', icon: '🛒' },
+    "bj's": { color: '#D32F2F', bg: '#FFEBEE', icon: '🛒' },
+    'default': { color: '#6366f1', bg: '#EEF2FF', icon: '🏷️' }
+};
+
 // DOM Elements
 const loadingSpinner = document.getElementById('loadingSpinner');
 const errorMessage = document.getElementById('errorMessage');
@@ -41,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDeals();
     setupEventListeners();
     setupDarkModeToggle();
+    setupLazyLoading();
+    calculateVirtualScrollParams();
+    setupMobileGestures();
+    setupPullToRefresh();
 });
 
 /**
@@ -321,10 +393,21 @@ function renderDeals() {
     // Show/hide no results message
     if (filteredDeals.length === 0) {
         showNoResults();
+        disableVirtualScroll();
         updatePaginationControls(totalPages);
         return;
     } else {
         hideNoResults();
+    }
+
+    // Try to use virtual scrolling for large datasets (500+ items)
+    if (!isMobile() && dealsToRender.length >= 500) {
+        if (initVirtualScroll()) {
+            updatePaginationControls(totalPages);
+            return; // Virtual scroll handles rendering
+        }
+    } else {
+        disableVirtualScroll();
     }
 
     // Use DocumentFragment for batch DOM updates (60% faster)
@@ -346,14 +429,45 @@ function renderDeals() {
         subCategoryCell.textContent = deal.subCategory || '';
         row.appendChild(subCategoryCell);
 
-        // Item / Product (with link)
+        // Item / Product (with link and optional lazy image)
         const titleCell = document.createElement('td');
+        titleCell.className = 'title-cell';
+        
+        const titleWrapper = document.createElement('div');
+        titleWrapper.className = 'title-wrapper';
+        
         const titleLink = document.createElement('a');
         titleLink.href = deal.link || '#';
         titleLink.textContent = deal.title || 'No title';
         titleLink.target = '_blank';
         titleLink.rel = 'noopener noreferrer';
-        titleCell.appendChild(titleLink);
+        titleWrapper.appendChild(titleLink);
+        
+        // Add copy link button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-link-btn';
+        copyBtn.innerHTML = '📋';
+        copyBtn.title = 'Copy link';
+        copyBtn.setAttribute('aria-label', 'Copy deal link');
+        copyBtn.dataset.link = deal.link || '';
+        copyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            copyDealLink(deal.link, copyBtn);
+        });
+        titleWrapper.appendChild(copyBtn);
+        
+        titleCell.appendChild(titleWrapper);
+        
+        // Add lazy-loaded image if deal has image URL
+        if (deal.image) {
+            const img = document.createElement('img');
+            img.dataset.src = deal.image;
+            img.alt = '';
+            img.className = 'deal-thumb lazy-image';
+            img.loading = 'lazy'; // Native lazy loading as fallback
+            titleCell.appendChild(img);
+        }
         row.appendChild(titleCell);
 
         // Original Price
@@ -372,9 +486,12 @@ function renderDeals() {
         }
         row.appendChild(salePriceCell);
 
-        // Store
+        // Store with branded badge
         const storeCell = document.createElement('td');
-        storeCell.textContent = deal.store || '';
+        if (deal.store) {
+            const storeBadge = createStoreBadge(deal.store);
+            storeCell.appendChild(storeBadge);
+        }
         row.appendChild(storeCell);
 
         // Sale Period
@@ -406,8 +523,25 @@ function renderDeals() {
         // === MOBILE CARD ===
         const card = document.createElement('div');
         card.className = 'deal-card';
+        card.dataset.link = deal.link || '';
 
-        // Title with link
+        // Add lazy image for mobile card if available
+        if (deal.image) {
+            const cardImage = document.createElement('div');
+            cardImage.className = 'deal-card-image';
+            const img = document.createElement('img');
+            img.dataset.src = deal.image;
+            img.alt = '';
+            img.className = 'lazy-image';
+            img.loading = 'lazy';
+            cardImage.appendChild(img);
+            card.appendChild(cardImage);
+        }
+
+        // Title with link and copy button
+        const cardHeader = document.createElement('div');
+        cardHeader.className = 'deal-card-header';
+        
         const cardTitle = document.createElement('div');
         cardTitle.className = 'deal-card-title';
         const cardLink = document.createElement('a');
@@ -416,7 +550,21 @@ function renderDeals() {
         cardLink.target = '_blank';
         cardLink.rel = 'noopener noreferrer';
         cardTitle.appendChild(cardLink);
-        card.appendChild(cardTitle);
+        cardHeader.appendChild(cardTitle);
+        
+        // Mobile copy button
+        const mobileCopyBtn = document.createElement('button');
+        mobileCopyBtn.className = 'copy-link-btn mobile';
+        mobileCopyBtn.innerHTML = '📋';
+        mobileCopyBtn.title = 'Copy link';
+        mobileCopyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            copyDealLink(deal.link, mobileCopyBtn);
+        });
+        cardHeader.appendChild(mobileCopyBtn);
+        
+        card.appendChild(cardHeader);
 
         // Meta tags (category, price, store)
         const cardMeta = document.createElement('div');
@@ -444,10 +592,8 @@ function renderDeals() {
         }
 
         if (deal.store) {
-            const storeTag = document.createElement('span');
-            storeTag.className = 'deal-card-tag store';
-            storeTag.textContent = deal.store;
-            cardMeta.appendChild(storeTag);
+            const storeBadge = createStoreBadge(deal.store, true);
+            cardMeta.appendChild(storeBadge);
         }
 
         card.appendChild(cardMeta);
@@ -481,6 +627,10 @@ function renderDeals() {
     // Single DOM update
     dealsTableBody.appendChild(tableFragment);
     if (mobileCards) mobileCards.appendChild(mobileFragment);
+
+    // Observe lazy images after DOM update
+    observeLazyImages(dealsTableBody);
+    if (mobileCards) observeLazyImages(mobileCards);
 
     // Update pagination controls
     updatePaginationControls(totalPages);
@@ -751,5 +901,550 @@ function formatDate(dateString) {
             day: 'numeric',
             year: 'numeric'
         });
+    }
+}
+
+// ==================== VIRTUAL SCROLLING ====================
+
+/**
+ * Calculate virtual scroll parameters based on viewport
+ */
+function calculateVirtualScrollParams() {
+    const viewportHeight = window.innerHeight;
+    visibleRowCount = Math.ceil(viewportHeight / rowHeight) + bufferRows * 2;
+    
+    // Recalculate on resize
+    window.addEventListener('resize', debounce(() => {
+        visibleRowCount = Math.ceil(window.innerHeight / rowHeight) + bufferRows * 2;
+        if (virtualScrollEnabled) {
+            renderVirtualScroll();
+        }
+    }, 150));
+}
+
+/**
+ * Initialize virtual scrolling for large datasets
+ * Only enables when showing more than 500 items on a page
+ */
+function initVirtualScroll() {
+    const dealsToRender = getCurrentPageDeals();
+    
+    // Only use virtual scroll for large datasets (500+ items)
+    if (dealsToRender.length < 500 || isMobile()) {
+        virtualScrollEnabled = false;
+        return false;
+    }
+    
+    virtualScrollEnabled = true;
+    
+    // Create virtual scroll wrapper if needed
+    if (!virtualScrollWrapper) {
+        virtualScrollWrapper = document.createElement('div');
+        virtualScrollWrapper.className = 'virtual-scroll-wrapper';
+        virtualScrollWrapper.id = 'virtualScrollWrapper';
+        
+        scrollContainer = document.createElement('div');
+        scrollContainer.className = 'virtual-scroll-container';
+        scrollContainer.id = 'virtualScrollContainer';
+        
+        virtualScrollWrapper.appendChild(scrollContainer);
+    }
+    
+    // Calculate total height
+    const totalHeight = dealsToRender.length * rowHeight;
+    scrollContainer.style.height = `${totalHeight}px`;
+    
+    // Insert wrapper after table
+    const tableContainer = dealsTable.parentNode;
+    if (!document.getElementById('virtualScrollWrapper')) {
+        tableContainer.insertBefore(virtualScrollWrapper, dealsTable.nextSibling);
+    }
+    
+    // Hide regular table, show virtual scroll
+    dealsTable.style.display = 'none';
+    virtualScrollWrapper.style.display = 'block';
+    
+    // Setup scroll listener with requestAnimationFrame for smooth scrolling
+    virtualScrollWrapper.addEventListener('scroll', handleVirtualScroll, { passive: true });
+    
+    // Initial render
+    renderVirtualScroll();
+    
+    return true;
+}
+
+/**
+ * Handle scroll events for virtual scrolling
+ */
+function handleVirtualScroll() {
+    if (scrollRAF) {
+        cancelAnimationFrame(scrollRAF);
+    }
+    
+    scrollRAF = requestAnimationFrame(() => {
+        const scrollTop = virtualScrollWrapper.scrollTop;
+        
+        // Only re-render if scrolled more than half a row
+        if (Math.abs(scrollTop - lastScrollTop) > rowHeight / 2) {
+            lastScrollTop = scrollTop;
+            renderVirtualScroll();
+        }
+    });
+}
+
+/**
+ * Render only visible rows in virtual scroll
+ */
+function renderVirtualScroll() {
+    if (!virtualScrollEnabled || !scrollContainer) return;
+    
+    const dealsToRender = getCurrentPageDeals();
+    const scrollTop = virtualScrollWrapper ? virtualScrollWrapper.scrollTop : 0;
+    
+    // Calculate visible range
+    const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - bufferRows);
+    const endIndex = Math.min(dealsToRender.length, startIndex + visibleRowCount + bufferRows * 2);
+    
+    // Clear and rebuild visible rows
+    scrollContainer.innerHTML = '';
+    
+    // Add spacer for scrolled-past items
+    const topSpacer = document.createElement('div');
+    topSpacer.style.height = `${startIndex * rowHeight}px`;
+    topSpacer.className = 'virtual-spacer-top';
+    scrollContainer.appendChild(topSpacer);
+    
+    // Create visible rows
+    const fragment = document.createDocumentFragment();
+    
+    for (let i = startIndex; i < endIndex; i++) {
+        const deal = dealsToRender[i];
+        const row = createVirtualRow(deal, i);
+        fragment.appendChild(row);
+    }
+    
+    scrollContainer.appendChild(fragment);
+    
+    // Add bottom spacer
+    const bottomSpacer = document.createElement('div');
+    bottomSpacer.style.height = `${(dealsToRender.length - endIndex) * rowHeight}px`;
+    bottomSpacer.className = 'virtual-spacer-bottom';
+    scrollContainer.appendChild(bottomSpacer);
+}
+
+/**
+ * Create a virtual scroll row
+ */
+function createVirtualRow(deal, index) {
+    const row = document.createElement('div');
+    row.className = 'virtual-row';
+    row.style.height = `${rowHeight}px`;
+    row.dataset.index = index;
+    
+    // Main content
+    row.innerHTML = `
+        <div class="vr-cell vr-category">${deal.mainCategory || ''}</div>
+        <div class="vr-cell vr-subcategory">${deal.subCategory || ''}</div>
+        <div class="vr-cell vr-title">
+            <a href="${deal.link || '#'}" target="_blank" rel="noopener noreferrer">${deal.title || 'No title'}</a>
+            ${deal.image ? `<img data-src="${deal.image}" alt="" class="deal-thumb lazy-image" loading="lazy">` : ''}
+        </div>
+        <div class="vr-cell vr-original-price ${deal.originalPrice ? 'has-price' : ''}">${deal.originalPrice || ''}</div>
+        <div class="vr-cell vr-sale-price">${deal.salePrice || ''}</div>
+        <div class="vr-cell vr-store">${deal.store || ''}</div>
+        <div class="vr-cell vr-date">${deal.pubDate ? formatDate(deal.pubDate) : ''}</div>
+    `;
+    
+    // Observe lazy images
+    const lazyImg = row.querySelector('.lazy-image');
+    if (lazyImg && imageObserver) {
+        imageObserver.observe(lazyImg);
+    }
+    
+    return row;
+}
+
+/**
+ * Get deals for current page
+ */
+function getCurrentPageDeals() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredDeals.length);
+    return filteredDeals.slice(startIndex, endIndex);
+}
+
+/**
+ * Disable virtual scrolling (when switching to smaller dataset)
+ */
+function disableVirtualScroll() {
+    virtualScrollEnabled = false;
+    if (virtualScrollWrapper) {
+        virtualScrollWrapper.style.display = 'none';
+    }
+    dealsTable.style.display = 'table';
+}
+
+// ==================== LAZY LOADING IMAGES ====================
+
+/**
+ * Setup lazy loading for images using IntersectionObserver
+ */
+function setupLazyLoading() {
+    // Check for IntersectionObserver support
+    if (!('IntersectionObserver' in window)) {
+        console.log('IntersectionObserver not supported, images will load immediately');
+        return;
+    }
+    
+    const options = {
+        root: null, // viewport
+        rootMargin: '100px', // Load images 100px before they enter viewport
+        threshold: 0.01
+    };
+    
+    imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                loadLazyImage(img);
+                observer.unobserve(img);
+            }
+        });
+    }, options);
+}
+
+/**
+ * Load a lazy image
+ */
+function loadLazyImage(img) {
+    const src = img.dataset.src;
+    if (!src) return;
+    
+    // Create a new image to preload
+    const tempImg = new Image();
+    
+    tempImg.onload = () => {
+        img.src = src;
+        img.classList.add('loaded');
+        img.classList.remove('lazy-image');
+    };
+    
+    tempImg.onerror = () => {
+        // Hide broken images
+        img.style.display = 'none';
+    };
+    
+    tempImg.src = src;
+}
+
+/**
+ * Observe all lazy images in a container
+ */
+function observeLazyImages(container) {
+    if (!imageObserver) return;
+    
+    const lazyImages = container.querySelectorAll('.lazy-image');
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+/**
+ * Utility: Debounce function
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ==================== STORE BADGES ====================
+
+/**
+ * Get store brand info (color, background, icon)
+ */
+function getStoreBrand(storeName) {
+    if (!storeName) return storeBrands.default;
+    
+    const lowerStore = storeName.toLowerCase().trim();
+    
+    // Check for exact match first
+    if (storeBrands[lowerStore]) {
+        return storeBrands[lowerStore];
+    }
+    
+    // Check for partial matches
+    for (const [key, value] of Object.entries(storeBrands)) {
+        if (key !== 'default' && lowerStore.includes(key)) {
+            return value;
+        }
+    }
+    
+    return storeBrands.default;
+}
+
+/**
+ * Create a styled store badge element
+ */
+function createStoreBadge(storeName, isMobile = false) {
+    const brand = getStoreBrand(storeName);
+    const badge = document.createElement('span');
+    badge.className = `store-badge ${isMobile ? 'mobile' : ''}`;
+    badge.style.setProperty('--store-color', brand.color);
+    badge.style.setProperty('--store-bg', brand.bg);
+    
+    badge.innerHTML = `<span class="store-icon">${brand.icon}</span><span class="store-name">${storeName}</span>`;
+    
+    return badge;
+}
+
+// ==================== COPY LINK ====================
+
+/**
+ * Copy deal link to clipboard
+ */
+async function copyDealLink(link, button) {
+    if (!link) {
+        showCopyFeedback(button, false);
+        return;
+    }
+    
+    try {
+        // Try modern clipboard API first
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(link);
+            showCopyFeedback(button, true);
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = link;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showCopyFeedback(button, true);
+        }
+    } catch (err) {
+        console.error('Failed to copy:', err);
+        showCopyFeedback(button, false);
+    }
+}
+
+/**
+ * Show visual feedback after copy
+ */
+function showCopyFeedback(button, success) {
+    const originalContent = button.innerHTML;
+    button.innerHTML = success ? '✓' : '✗';
+    button.classList.add(success ? 'copied' : 'copy-failed');
+    
+    setTimeout(() => {
+        button.innerHTML = originalContent;
+        button.classList.remove('copied', 'copy-failed');
+    }, 1500);
+}
+
+// ==================== MOBILE GESTURES ====================
+
+/**
+ * Setup swipe gestures for mobile navigation
+ */
+function setupMobileGestures() {
+    if (!isMobile()) return;
+    
+    const container = document.querySelector('.container');
+    if (!container) return;
+    
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+}
+
+/**
+ * Handle touch start for swipe detection
+ */
+function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}
+
+/**
+ * Handle touch move for swipe detection
+ */
+function handleTouchMove(e) {
+    // Handled in touchend for simplicity
+}
+
+/**
+ * Handle touch end - detect swipe direction
+ */
+function handleTouchEnd(e) {
+    if (!e.changedTouches || !e.changedTouches[0]) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Only handle horizontal swipes (ignore vertical scrolling)
+    if (Math.abs(deltaX) < swipeThreshold || Math.abs(deltaY) > Math.abs(deltaX)) {
+        return;
+    }
+    
+    // Swipe left = next page
+    if (deltaX < -swipeThreshold) {
+        const totalPages = Math.ceil(filteredDeals.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            showSwipeIndicator('next');
+            nextPage();
+        }
+    }
+    // Swipe right = previous page
+    else if (deltaX > swipeThreshold) {
+        if (currentPage > 1) {
+            showSwipeIndicator('prev');
+            previousPage();
+        }
+    }
+}
+
+/**
+ * Show visual indicator for swipe navigation
+ */
+function showSwipeIndicator(direction) {
+    // Remove existing indicator
+    const existing = document.querySelector('.swipe-indicator');
+    if (existing) existing.remove();
+    
+    const indicator = document.createElement('div');
+    indicator.className = `swipe-indicator ${direction}`;
+    indicator.innerHTML = direction === 'next' ? '→ Next Page' : '← Previous Page';
+    document.body.appendChild(indicator);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        indicator.classList.add('visible');
+    });
+    
+    // Remove after animation
+    setTimeout(() => {
+        indicator.classList.remove('visible');
+        setTimeout(() => indicator.remove(), 300);
+    }, 800);
+}
+
+// ==================== PULL TO REFRESH ====================
+
+/**
+ * Setup pull-to-refresh for mobile
+ */
+function setupPullToRefresh() {
+    if (!isMobile()) return;
+    
+    // Create pull-to-refresh indicator
+    const ptrIndicator = document.createElement('div');
+    ptrIndicator.className = 'ptr-indicator';
+    ptrIndicator.innerHTML = `
+        <div class="ptr-spinner"></div>
+        <span class="ptr-text">Pull to refresh</span>
+    `;
+    document.body.insertBefore(ptrIndicator, document.body.firstChild);
+    
+    pullToRefreshEnabled = true;
+    
+    document.addEventListener('touchstart', ptrTouchStart, { passive: true });
+    document.addEventListener('touchmove', ptrTouchMove, { passive: false });
+    document.addEventListener('touchend', ptrTouchEnd, { passive: true });
+}
+
+/**
+ * Pull-to-refresh touch start
+ */
+function ptrTouchStart(e) {
+    if (window.scrollY !== 0) return;
+    pullStartY = e.touches[0].clientY;
+    isPulling = true;
+}
+
+/**
+ * Pull-to-refresh touch move
+ */
+function ptrTouchMove(e) {
+    if (!isPulling || window.scrollY > 0) {
+        isPulling = false;
+        return;
+    }
+    
+    pullMoveY = e.touches[0].clientY;
+    const pullDistance = pullMoveY - pullStartY;
+    
+    if (pullDistance > 0 && pullDistance < 150) {
+        // Prevent default scroll when pulling
+        e.preventDefault();
+        
+        const indicator = document.querySelector('.ptr-indicator');
+        const progress = Math.min(pullDistance / pullThreshold, 1);
+        
+        indicator.style.transform = `translateY(${pullDistance * 0.5}px)`;
+        indicator.style.opacity = progress;
+        
+        if (pullDistance >= pullThreshold) {
+            indicator.classList.add('ready');
+            indicator.querySelector('.ptr-text').textContent = 'Release to refresh';
+        } else {
+            indicator.classList.remove('ready');
+            indicator.querySelector('.ptr-text').textContent = 'Pull to refresh';
+        }
+    }
+}
+
+/**
+ * Pull-to-refresh touch end
+ */
+function ptrTouchEnd(e) {
+    if (!isPulling) return;
+    
+    const indicator = document.querySelector('.ptr-indicator');
+    const pullDistance = pullMoveY - pullStartY;
+    
+    if (pullDistance >= pullThreshold) {
+        // Trigger refresh
+        indicator.classList.add('refreshing');
+        indicator.querySelector('.ptr-text').textContent = 'Refreshing...';
+        
+        // Reload deals
+        loadDeals().then(() => {
+            setTimeout(() => {
+                resetPullToRefresh();
+            }, 500);
+        });
+    } else {
+        resetPullToRefresh();
+    }
+    
+    isPulling = false;
+    pullStartY = 0;
+    pullMoveY = 0;
+}
+
+/**
+ * Reset pull-to-refresh indicator
+ */
+function resetPullToRefresh() {
+    const indicator = document.querySelector('.ptr-indicator');
+    if (indicator) {
+        indicator.style.transform = 'translateY(-60px)';
+        indicator.style.opacity = '0';
+        indicator.classList.remove('ready', 'refreshing');
+        indicator.querySelector('.ptr-text').textContent = 'Pull to refresh';
     }
 }

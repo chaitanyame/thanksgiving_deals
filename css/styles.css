@@ -76,6 +76,7 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     transition: background-color var(--transition-normal), color var(--transition-normal);
+    overflow-x: hidden;
 }
 
 /* ==================== DARK MODE TOGGLE ==================== */
@@ -119,20 +120,22 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 12px 20px;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 /* ==================== HEADER ==================== */
 header {
     background: var(--accent-gradient);
     color: white;
-    padding: 50px 30px;
+    padding: 16px 20px;
     text-align: center;
-    border-radius: var(--radius-xl);
-    margin-bottom: 24px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 10px;
     position: relative;
     overflow: hidden;
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
 }
 
 header::before {
@@ -155,12 +158,12 @@ header::before {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    padding: 8px 20px;
+    padding: 4px 12px;
     border-radius: var(--radius-full);
-    font-size: 0.85rem;
+    font-size: 0.65rem;
     font-weight: 600;
     letter-spacing: 1px;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
     animation: pulse 2s infinite;
 }
 
@@ -170,16 +173,16 @@ header::before {
 }
 
 header h1 {
-    font-size: 3rem;
+    font-size: 1.8rem;
     font-weight: 800;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
     letter-spacing: -1px;
     position: relative;
     z-index: 1;
 }
 
 header .subtitle {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     opacity: 0.9;
     font-weight: 400;
     position: relative;
@@ -190,23 +193,25 @@ header .subtitle {
 .stats-bar {
     display: flex;
     justify-content: center;
-    gap: 40px;
-    padding: 20px;
+    gap: 30px;
+    padding: 12px 20px;
     background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
     flex-wrap: wrap;
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .stat-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
 .stat-content {
@@ -215,28 +220,30 @@ header .subtitle {
 }
 
 .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .stat-value {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 /* ==================== FILTERS ==================== */
 .filters {
-    padding: 24px;
+    padding: 16px 20px;
     background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    box-shadow: var(--shadow-md);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    box-shadow: var(--shadow-sm);
     transition: all var(--transition-normal);
 }
 
@@ -247,19 +254,19 @@ header .subtitle {
 
 .filter-group label {
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .filter-group select,
 .filter-group input {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border: 2px solid var(--border-color);
     border-radius: var(--radius-md);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-family: inherit;
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -287,11 +294,11 @@ header .subtitle {
 .quick-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 16px 24px;
+    gap: 8px;
+    padding: 10px 16px;
     background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
     align-items: center;
     box-shadow: var(--shadow-sm);
 }
@@ -304,13 +311,13 @@ header .subtitle {
 }
 
 .quick-filter-btn {
-    padding: 8px 16px;
+    padding: 6px 12px;
     border: 2px solid var(--border-color);
     border-radius: var(--radius-full);
     background: var(--bg-secondary);
     color: var(--text-primary);
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     font-family: inherit;
     transition: all var(--transition-fast);
@@ -348,23 +355,23 @@ header .subtitle {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
+    gap: 10px;
+    padding: 10px 16px;
     background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
     box-shadow: var(--shadow-sm);
     flex-wrap: wrap;
 }
 
 .pagination-btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     background: var(--accent-gradient);
     color: white;
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     font-family: inherit;
     transition: all var(--transition-fast);
@@ -636,16 +643,218 @@ footer a:hover {
     to { transform: translateX(-50%) translateY(0); }
 }
 
-/* ==================== RESPONSIVE - TABLET ==================== */
+/* ==================== RESPONSIVE - LARGE TABLET / iPAD ==================== */
 @media (max-width: 1024px) {
     .container {
+        padding: 10px;
+        max-width: 100%;
+    }
+    
+    header {
         padding: 16px;
+        margin-bottom: 10px;
+        text-align: center;
     }
     
     header h1 {
-        font-size: 2.2rem;
+        font-size: 1.5rem;
     }
     
+    header .subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .header-badge {
+        padding: 4px 10px;
+        font-size: 0.6rem;
+        margin-bottom: 6px;
+    }
+    
+    .stats-bar {
+        padding: 10px 12px;
+        gap: 16px;
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+    
+    .stat-item {
+        gap: 8px;
+    }
+    
+    .stat-icon {
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-value {
+        font-size: 0.85rem;
+    }
+    
+    .filters {
+        padding: 12px;
+        gap: 10px;
+        margin-bottom: 10px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-group label {
+        font-size: 0.7rem;
+        margin-bottom: 4px;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .quick-filters {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 10px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .quick-filter-label {
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    
+    .quick-filter-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    .pagination {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .pagination-btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+    
+    #pageInfo, #pageInfoBottom {
+        font-size: 0.8rem;
+        min-width: 90px;
+    }
+    
+    .items-per-page {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    
+    /* Table adjustments for tablet */
+    .deals-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .deals-table thead th {
+        padding: 10px 12px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+    
+    .deals-table tbody td {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+    
+    footer {
+        padding: 14px;
+        margin-top: 14px;
+        font-size: 0.85rem;
+    }
+    
+    .back-to-top {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+        bottom: 16px;
+        right: 16px;
+    }
+    
+    .dark-mode-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* ==================== RESPONSIVE - iPAD PORTRAIT ==================== */
+@media (max-width: 834px) {
+    .container {
+        padding: 8px;
+    }
+    
+    header {
+        padding: 14px;
+        border-radius: var(--radius-md);
+        text-align: center;
+    }
+    
+    header h1 {
+        font-size: 1.4rem;
+    }
+    
+    header .subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .stats-bar {
+        padding: 10px;
+        gap: 12px;
+    }
+    
+    .filters {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .filter-group:nth-child(3),
+    .filter-group:nth-child(4) {
+        grid-column: span 1;
+    }
+    
+    .quick-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 8px;
+    }
+    
+    .quick-filters::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .quick-filter-label {
+        display: none;
+    }
+    
+    .quick-filter-btn {
+        flex-shrink: 0;
+        padding: 8px 14px;
+    }
+    
+    .pagination {
+        padding: 8px;
+    }
+    
+    /* Show table but make it scrollable */
     .deals-table {
         display: block;
         overflow-x: auto;
@@ -655,70 +864,92 @@ footer a:hover {
 /* ==================== RESPONSIVE - MOBILE ==================== */
 @media (max-width: 768px) {
     .dark-mode-toggle {
-        top: 10px;
-        right: 10px;
-        width: 44px;
-        height: 44px;
-        font-size: 18px;
+        top: 8px;
+        right: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
     }
 
     .container {
-        padding: 12px;
+        padding: 8px;
     }
 
     header {
-        padding: 30px 20px;
-        border-radius: var(--radius-lg);
-        margin-bottom: 16px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
     }
 
     .header-badge {
-        font-size: 0.75rem;
-        padding: 6px 14px;
+        font-size: 0.55rem;
+        padding: 3px 8px;
+        margin-bottom: 4px;
     }
 
     header h1 {
-        font-size: 1.8rem;
+        font-size: 1.3rem;
+        margin-bottom: 2px;
     }
 
     header .subtitle {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
 
     .stats-bar {
-        gap: 20px;
-        padding: 16px;
-        margin-bottom: 16px;
+        gap: 16px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+    }
+
+    .stat-item {
+        gap: 8px;
     }
 
     .stat-icon {
-        font-size: 1.2rem;
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
     }
 
     .stat-value {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
 
     .filters {
         grid-template-columns: 1fr;
-        padding: 16px;
-        gap: 14px;
+        padding: 10px 12px;
+        gap: 10px;
         border-radius: var(--radius-md);
+        margin-bottom: 8px;
+    }
+    
+    .filter-group label {
+        font-size: 0.7rem;
+        margin-bottom: 4px;
     }
 
     .filter-group select,
     .filter-group input {
-        padding: 14px;
-        font-size: 16px;
+        padding: 10px 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
     }
 
     .quick-filters {
-        padding: 12px 16px;
-        gap: 8px;
+        padding: 8px 10px;
+        gap: 6px;
         overflow-x: auto;
         flex-wrap: nowrap;
         -webkit-overflow-scrolling: touch;
         border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        scrollbar-width: none;
+    }
+    
+    .quick-filters::-webkit-scrollbar {
+        display: none;
     }
 
     .quick-filter-label {
@@ -726,35 +957,40 @@ footer a:hover {
     }
 
     .quick-filter-btn {
-        padding: 10px 14px;
-        font-size: 0.8rem;
+        padding: 8px 12px;
+        font-size: 0.75rem;
         flex-shrink: 0;
     }
 
     .pagination {
-        padding: 12px;
-        gap: 8px;
+        padding: 8px 10px;
+        gap: 6px;
         border-radius: var(--radius-md);
+        margin-bottom: 8px;
     }
 
     .pagination-btn {
-        padding: 12px 16px;
-        font-size: 0.85rem;
+        padding: 10px 14px;
+        font-size: 0.8rem;
     }
 
     #pageInfo, #pageInfoBottom {
         min-width: auto;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     .items-per-page {
         font-size: 16px;
-        padding: 12px;
+        padding: 8px 10px;
     }
 
     /* Hide table on mobile */
     .deals-table {
-        display: none;
+        display: none !important;
+    }
+    
+    .virtual-scroll-wrapper {
+        display: none !important;
     }
 
     /* Show mobile cards */
@@ -764,11 +1000,11 @@ footer a:hover {
 
     .deal-card {
         background: var(--bg-secondary);
-        border-radius: var(--radius-lg);
-        padding: 18px;
-        margin-bottom: 14px;
-        box-shadow: var(--shadow-md);
-        border-left: 4px solid var(--accent-primary);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        margin-bottom: 10px;
+        box-shadow: var(--shadow-sm);
+        border-left: 3px solid var(--accent-primary);
         animation: fadeIn 0.3s ease;
         transition: all var(--transition-fast);
     }
@@ -778,10 +1014,10 @@ footer a:hover {
     }
 
     .deal-card-title {
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: var(--text-primary);
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         line-height: 1.4;
     }
 
@@ -793,13 +1029,13 @@ footer a:hover {
     .deal-card-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 12px;
+        gap: 6px;
+        margin-bottom: 10px;
     }
 
     .deal-card-tag {
-        font-size: 0.75rem;
-        padding: 5px 10px;
+        font-size: 0.7rem;
+        padding: 4px 8px;
         border-radius: var(--radius-full);
         font-weight: 500;
     }
@@ -830,60 +1066,698 @@ footer a:hover {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         color: var(--text-muted);
-        padding-top: 10px;
+        padding-top: 8px;
         border-top: 1px solid var(--border-light);
     }
 
     .deal-card-notes {
         color: var(--warning);
         font-style: italic;
-        font-size: 0.8rem;
-        margin-top: 10px;
-        padding: 8px 12px;
+        font-size: 0.75rem;
+        margin-top: 8px;
+        padding: 6px 10px;
         background: var(--warning-light);
         border-radius: var(--radius-sm);
     }
 
     footer {
-        padding: 16px;
-        font-size: 0.85rem;
+        padding: 12px;
+        font-size: 0.8rem;
         border-radius: var(--radius-md);
-        margin-top: 16px;
+        margin-top: 12px;
     }
 
     .back-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 48px;
-        height: 48px;
-        font-size: 20px;
+        bottom: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
     }
 
     .filters.sticky {
         position: static;
         transform: none;
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    /* Store badge mobile */
+    .store-badge {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .store-badge .store-icon {
+        font-size: 0.85rem;
+    }
+    
+    .store-badge .store-name {
+        max-width: 70px;
+    }
+    
+    /* Copy button mobile */
+    .copy-link-btn {
+        width: 36px;
+        height: 36px;
     }
 }
 
-/* ==================== RESPONSIVE - SMALL MOBILE ==================== */
+/* ==================== RESPONSIVE - SMALL MOBILE (iPhone SE, etc.) ==================== */
 @media (max-width: 380px) {
+    .container {
+        padding: 6px;
+    }
+    
+    header {
+        padding: 10px 12px;
+    }
+    
     header h1 {
-        font-size: 1.5rem;
+        font-size: 1.15rem;
+    }
+    
+    header .subtitle {
+        font-size: 0.7rem;
+    }
+    
+    .header-badge {
+        font-size: 0.5rem;
+        padding: 2px 6px;
     }
 
     .stats-bar {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .stat-item {
         flex-direction: column;
-        gap: 12px;
+        text-align: center;
+        gap: 2px;
+    }
+    
+    .stat-icon {
+        font-size: 0.9rem;
+    }
+    
+    .stat-label {
+        font-size: 0.55rem;
+    }
+    
+    .stat-value {
+        font-size: 0.75rem;
+    }
+    
+    .filters {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        padding: 8px 10px;
     }
 
     .pagination {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
     }
 
     .pagination-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+        flex: 1;
+        min-width: 80px;
+    }
+    
+    #pageInfo, #pageInfoBottom {
         width: 100%;
+        order: -1;
+        font-size: 0.75rem;
+    }
+    
+    .items-per-page {
+        padding: 6px 8px;
+        font-size: 14px;
+    }
+    
+    .deal-card {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .deal-card-title {
+        font-size: 0.9rem;
+    }
+    
+    .deal-card-tag {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+    }
+    
+    .deal-card-footer {
+        font-size: 0.65rem;
+    }
+    
+    .quick-filter-btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .back-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        bottom: 12px;
+        right: 12px;
+    }
+    
+    .dark-mode-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        top: 6px;
+        right: 6px;
+    }
+}
+
+/* ==================== RESPONSIVE - iPAD LANDSCAPE ==================== */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    .container {
+        padding: 12px 20px;
+    }
+    
+    header {
+        padding: 14px 20px;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .filters {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .deals-table thead th,
+    .deals-table tbody td {
+        padding: 12px 16px;
+    }
+}
+
+/* ==================== RESPONSIVE - iPAD PRO 12.9" ==================== */
+@media (min-width: 1024px) and (max-width: 1024px) and (min-height: 1366px) {
+    .container {
+        padding: 16px 24px;
+    }
+    
+    .filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ==================== TOUCH DEVICE OPTIMIZATIONS ==================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .quick-filter-btn,
+    .pagination-btn,
+    .copy-link-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        min-height: 44px;
+    }
+    
+    /* Remove hover effects that don't work on touch */
+    .quick-filter-btn:hover,
+    .pagination-btn:hover:not(:disabled) {
+        transform: none;
+    }
+    
+    .deal-card:hover {
+        transform: none;
+    }
+    
+    /* Active states instead of hover */
+    .quick-filter-btn:active {
+        background: var(--accent-primary);
+        color: white;
+        transform: scale(0.95);
+    }
+    
+    .pagination-btn:active:not(:disabled) {
+        transform: scale(0.95);
+    }
+}
+
+/* ==================== VIRTUAL SCROLLING ==================== */
+.virtual-scroll-wrapper {
+    display: none;
+    height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    scroll-behavior: auto; /* Disable smooth scroll for performance */
+    -webkit-overflow-scrolling: touch;
+}
+
+.virtual-scroll-container {
+    position: relative;
+    width: 100%;
+}
+
+.virtual-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 0.8fr 0.8fr 1fr 1fr;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+    transition: background-color var(--transition-fast);
+    will-change: transform; /* GPU acceleration hint */
+}
+
+.virtual-row:hover {
+    background: var(--accent-light);
+}
+
+.vr-cell {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vr-title {
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vr-title a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.vr-title a:hover {
+    color: var(--accent-secondary);
+    text-decoration: underline;
+}
+
+.vr-category,
+.vr-subcategory {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.vr-original-price.has-price {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-size: 0.85rem;
+}
+
+.vr-sale-price {
+    color: var(--success);
+    font-weight: 700;
+}
+
+.vr-store {
+    font-weight: 500;
+}
+
+.vr-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.virtual-spacer-top,
+.virtual-spacer-bottom {
+    width: 100%;
+    pointer-events: none;
+}
+
+/* Virtual scroll header (sticky) */
+.virtual-scroll-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 0.8fr 0.8fr 1fr 1fr;
+    padding: 16px 28px;
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.virtual-scroll-header span {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==================== LAZY LOADING IMAGES ==================== */
+.lazy-image {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: var(--bg-tertiary);
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.lazy-image.loaded {
+    opacity: 1;
+}
+
+.deal-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+/* Mobile card images */
+.deal-card-image {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    background: var(--bg-tertiary);
+}
+
+.deal-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Image loading placeholder animation */
+.lazy-image:not(.loaded) {
+    background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-secondary) 50%, var(--bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+/* ==================== PERFORMANCE OPTIMIZATIONS ==================== */
+/* Reduce paint operations during scroll */
+.virtual-scroll-wrapper * {
+    will-change: auto;
+}
+
+.virtual-row {
+    contain: layout style;
+}
+
+/* Hardware acceleration for smooth scrolling */
+.virtual-scroll-container {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* ==================== STORE BADGES ==================== */
+.store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: var(--store-bg, #EEF2FF);
+    color: var(--store-color, #6366f1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+}
+
+.store-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--store-color, #6366f1);
+}
+
+.store-badge .store-icon {
+    font-size: 1rem;
+}
+
+.store-badge .store-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.store-badge.mobile {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+}
+
+.store-badge.mobile .store-icon {
+    font-size: 0.9rem;
+}
+
+.store-badge.mobile .store-name {
+    max-width: 80px;
+}
+
+/* Dark theme adjustments for store badges */
+[data-theme="dark"] .store-badge {
+    background: color-mix(in srgb, var(--store-bg, #EEF2FF) 30%, var(--bg-tertiary));
+}
+
+/* ==================== COPY LINK BUTTON ==================== */
+.title-cell {
+    position: relative;
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.title-wrapper a {
+    flex: 1;
+}
+
+.copy-link-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    opacity: 0.6;
+}
+
+.copy-link-btn:hover {
+    opacity: 1;
+    background: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.copy-link-btn:hover::after {
+    content: 'Copy';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    box-shadow: var(--shadow-md);
+}
+
+.copy-link-btn.copied {
+    background: var(--success);
+    color: white;
+    opacity: 1;
+    animation: copySuccess 0.3s ease;
+}
+
+.copy-link-btn.copy-failed {
+    background: var(--danger);
+    color: white;
+    opacity: 1;
+}
+
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.copy-link-btn.mobile {
+    width: 36px;
+    height: 36px;
+    opacity: 0.8;
+    background: var(--bg-tertiary);
+}
+
+/* ==================== MOBILE CARD HEADER ==================== */
+.deal-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.deal-card-header .deal-card-title {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* ==================== SWIPE INDICATOR ==================== */
+.swipe-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: var(--accent-gradient);
+    color: white;
+    padding: 16px 32px;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1.1rem;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-xl);
+    pointer-events: none;
+}
+
+.swipe-indicator.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.swipe-indicator.prev {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* ==================== PULL TO REFRESH ==================== */
+.ptr-indicator {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-60px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 9998;
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.ptr-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: none;
+}
+
+.ptr-indicator.ready .ptr-spinner {
+    border-top-color: var(--success);
+    animation: spin 0.8s linear infinite;
+}
+
+.ptr-indicator.refreshing .ptr-spinner {
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.ptr-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.ptr-indicator.ready .ptr-text {
+    color: var(--success);
+}
+
+.ptr-indicator.refreshing .ptr-text {
+    color: var(--accent-primary);
+}
+
+/* ==================== MOBILE SWIPE HINTS ==================== */
+@media (max-width: 768px) {
+    /* Show swipe hint on first visit */
+    .mobile-cards::before {
+        content: '← Swipe to navigate pages →';
+        display: block;
+        text-align: center;
+        padding: 10px;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+    
+    /* Hide hint after first card */
+    .mobile-cards .deal-card ~ .deal-card::before {
+        display: none;
+    }
+    
+    /* Card swipe animation */
+    .deal-card {
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    
+    .deal-card.swiping-left {
+        transform: translateX(-20px);
+        opacity: 0.8;
+    }
+    
+    .deal-card.swiping-right {
+        transform: translateX(20px);
+        opacity: 0.8;
+    }
+    
+    /* Better touch targets */
+    .copy-link-btn.mobile {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    /* Store badge in card meta */
+    .deal-card-meta .store-badge {
+        margin-left: auto;
     }
 }
