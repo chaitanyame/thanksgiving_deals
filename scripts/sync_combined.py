@@ -357,9 +357,9 @@ def load_existing_deals():
 def merge_deals(existing_deals, new_rss_deals):
     """
     Merge existing deals with new RSS deals.
-    - Keep all existing deals from Google Sheets
-    - Add new RSS deals if they don't already exist (by title similarity)
-    - Replace sheet deals with RSS deals when duplicate detected (RSS has better URLs)
+    - Keep ALL existing deals unchanged (they have proper URLs from Excel)
+    - Only add NEW RSS deals that don't already exist
+    - Never replace existing deals (Excel URLs are better than RSS search URLs)
     """
     # Normalize title for comparison
     def normalize_title(title):
@@ -369,30 +369,35 @@ def merge_deals(existing_deals, new_rss_deals):
         normalized = ' '.join(normalized.split())
         return normalized
     
-    # Create map of existing deals by ID
+    # Create map of existing deals by ID (preserve all existing deals)
     existing_map = {deal['id']: deal for deal in existing_deals}
     
     # Create title index for duplicate detection
-    title_to_id = {}
-    for deal_id, deal in existing_map.items():
+    existing_titles = set()
+    for deal in existing_deals:
         norm_title = normalize_title(deal['title'])
-        title_to_id[norm_title] = deal_id
+        existing_titles.add(norm_title)
     
-    # Add or update RSS deals, replacing duplicates
+    # Only add RSS deals that are truly NEW (not already in existing deals)
+    new_count = 0
     for rss_deal in new_rss_deals:
         norm_title = normalize_title(rss_deal['title'])
         
-        # Check if this title already exists
-        if norm_title in title_to_id:
-            # Remove the old sheet deal
-            old_id = title_to_id[norm_title]
-            if old_id in existing_map and old_id.startswith('sheet-'):
-                del existing_map[old_id]
-                print(f"Replacing sheet deal with RSS deal: {rss_deal['title'][:60]}...")
+        # Skip if this title already exists (keep the existing deal with better URL)
+        if norm_title in existing_titles:
+            continue
         
-        # Add RSS deal
+        # Skip if this deal ID already exists
+        if rss_deal['id'] in existing_map:
+            continue
+        
+        # This is a truly new deal - add it
         existing_map[rss_deal['id']] = rss_deal
-        title_to_id[norm_title] = rss_deal['id']
+        existing_titles.add(norm_title)
+        new_count += 1
+        print(f"  Added new deal: {rss_deal['title'][:60]}...")
+    
+    print(f"Added {new_count} new deals from RSS feed")
     
     # Return all deals sorted by pubDate (newest first)
     all_deals = list(existing_map.values())
