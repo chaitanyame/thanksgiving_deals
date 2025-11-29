@@ -24,6 +24,12 @@ const nextPageBtn = document.getElementById('nextPage');
 const pageInfoElement = document.getElementById('pageInfo');
 const itemsPerPageSelect = document.getElementById('itemsPerPage');
 
+// Bottom pagination elements
+const prevPageBtnBottom = document.getElementById('prevPageBottom');
+const nextPageBtnBottom = document.getElementById('nextPageBottom');
+const pageInfoElementBottom = document.getElementById('pageInfoBottom');
+const itemsPerPageSelectBottom = document.getElementById('itemsPerPageBottom');
+
 // Check if mobile
 const isMobile = () => window.innerWidth <= 768;
 
@@ -449,12 +455,22 @@ function renderDeals() {
 }
 
 /**
- * Update pagination controls
+ * Update pagination controls (both top and bottom)
  */
 function updatePaginationControls(totalPages) {
-    pageInfoElement.textContent = `Page ${currentPage} of ${totalPages || 1}`;
-    prevPageBtn.disabled = currentPage === 1;
-    nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
+    const pageText = `Page ${currentPage} of ${totalPages || 1}`;
+    const isFirstPage = currentPage === 1;
+    const isLastPage = currentPage >= totalPages || totalPages === 0;
+    
+    // Top pagination
+    pageInfoElement.textContent = pageText;
+    prevPageBtn.disabled = isFirstPage;
+    nextPageBtn.disabled = isLastPage;
+    
+    // Bottom pagination
+    if (pageInfoElementBottom) pageInfoElementBottom.textContent = pageText;
+    if (prevPageBtnBottom) prevPageBtnBottom.disabled = isFirstPage;
+    if (nextPageBtnBottom) nextPageBtnBottom.disabled = isLastPage;
 }
 
 /**
@@ -519,6 +535,18 @@ function setupEventListeners() {
     prevPageBtn.addEventListener('click', previousPage);
     nextPageBtn.addEventListener('click', nextPage);
     itemsPerPageSelect.addEventListener('change', changeItemsPerPage);
+
+    // Bottom pagination event listeners
+    if (prevPageBtnBottom) prevPageBtnBottom.addEventListener('click', previousPage);
+    if (nextPageBtnBottom) nextPageBtnBottom.addEventListener('click', nextPage);
+    if (itemsPerPageSelectBottom) {
+        itemsPerPageSelectBottom.addEventListener('change', () => {
+            itemsPerPage = parseInt(itemsPerPageSelectBottom.value);
+            itemsPerPageSelect.value = itemsPerPageSelectBottom.value; // Sync top select
+            currentPage = 1;
+            renderDeals();
+        });
+    }
 
     // Quick filter buttons
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
