@@ -33,11 +33,43 @@ const itemsPerPageSelectBottom = document.getElementById('itemsPerPageBottom');
 // Check if mobile
 const isMobile = () => window.innerWidth <= 768;
 
+// Initialize dark mode from localStorage
+initDarkMode();
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadDeals();
     setupEventListeners();
+    setupDarkModeToggle();
 });
+
+/**
+ * Initialize dark mode based on saved preference or system preference
+ */
+function initDarkMode() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+}
+
+/**
+ * Setup dark mode toggle button
+ */
+function setupDarkModeToggle() {
+    const toggle = document.getElementById('darkModeToggle');
+    if (!toggle) return;
+    
+    toggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+}
 
 /**
  * Load deals from data/deals.json

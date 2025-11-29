@@ -6,20 +6,43 @@
     <title>Slickdeals Black Friday Tracker</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#6366f1">
     <meta name="description" content="Browse and filter 12,000+ Black Friday deals from Slickdeals. Updated every 30 minutes.">
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <!-- Dark Mode Toggle -->
+    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+    </button>
+
     <div class="container">
         <header>
-            <h1>Slickdeals Black Friday Deals Tracker</h1>
-            <p class="subtitle">Browse and filter all the latest deals</p>
+            <div class="header-badge">🔥 BLACK FRIDAY 2025</div>
+            <h1>Slickdeals Tracker</h1>
+            <p class="subtitle">Browse and filter 12,000+ deals • Updated every 30 min</p>
         </header>
 
-        <div class="last-updated">
-            <p>Last Updated: <span id="lastUpdated">Loading...</span></p>
-            <p class="deal-count">Showing <span id="dealCount">0</span> deals</p>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-icon">🕐</span>
+                <div class="stat-content">
+                    <span class="stat-label">Last Updated</span>
+                    <span class="stat-value" id="lastUpdated">Loading...</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🏷️</span>
+                <div class="stat-content">
+                    <span class="stat-label">Total Deals</span>
+                    <span class="stat-value" id="dealCount">0</span>
+                </div>
+            </div>
         </div>
 
         <div class="filters">
@@ -79,8 +102,13 @@
         </div>
 
         <div id="loadingSpinner" class="loading">
-            <div class="spinner"></div>
-            <p>Loading deals...</p>
+            <div class="skeleton-container">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+            <p class="loading-text">Loading amazing deals...</p>
         </div>
 
         <div id="errorMessage" class="error" style="display: none;"></div>
