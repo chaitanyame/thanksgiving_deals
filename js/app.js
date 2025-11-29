@@ -12,6 +12,7 @@ const errorMessage = document.getElementById('errorMessage');
 const noResults = document.getElementById('noResults');
 const dealsTable = document.getElementById('dealsTable');
 const dealsTableBody = document.getElementById('dealsTableBody');
+const mobileCards = document.getElementById('mobileCards');
 const lastUpdatedSpan = document.getElementById('lastUpdated');
 const dealCountSpan = document.getElementById('dealCount');
 const mainCategoryFilter = document.getElementById('mainCategoryFilter');
@@ -22,6 +23,9 @@ const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
 const pageInfoElement = document.getElementById('pageInfo');
 const itemsPerPageSelect = document.getElementById('itemsPerPage');
+
+// Check if mobile
+const isMobile = () => window.innerWidth <= 768;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -272,8 +276,9 @@ function renderDeals() {
     const endIndex = Math.min(startIndex + itemsPerPage, filteredDeals.length);
     const dealsToRender = filteredDeals.slice(startIndex, endIndex);
 
-    // Clear existing rows
+    // Clear existing content
     dealsTableBody.innerHTML = '';
+    if (mobileCards) mobileCards.innerHTML = '';
 
     // Show/hide no results message
     if (filteredDeals.length === 0) {
@@ -285,10 +290,12 @@ function renderDeals() {
     }
 
     // Use DocumentFragment for batch DOM updates (60% faster)
-    const fragment = document.createDocumentFragment();
+    const tableFragment = document.createDocumentFragment();
+    const mobileFragment = document.createDocumentFragment();
 
     // Render only visible deals
     dealsToRender.forEach(deal => {
+        // === TABLE ROW (Desktop) ===
         const row = document.createElement('tr');
 
         // Main Category
@@ -356,11 +363,86 @@ function renderDeals() {
         }
         row.appendChild(publishedCell);
 
-        fragment.appendChild(row);
+        tableFragment.appendChild(row);
+
+        // === MOBILE CARD ===
+        const card = document.createElement('div');
+        card.className = 'deal-card';
+
+        // Title with link
+        const cardTitle = document.createElement('div');
+        cardTitle.className = 'deal-card-title';
+        const cardLink = document.createElement('a');
+        cardLink.href = deal.link || '#';
+        cardLink.textContent = deal.title || 'No title';
+        cardLink.target = '_blank';
+        cardLink.rel = 'noopener noreferrer';
+        cardTitle.appendChild(cardLink);
+        card.appendChild(cardTitle);
+
+        // Meta tags (category, price, store)
+        const cardMeta = document.createElement('div');
+        cardMeta.className = 'deal-card-meta';
+
+        if (deal.mainCategory) {
+            const catTag = document.createElement('span');
+            catTag.className = 'deal-card-tag category';
+            catTag.textContent = deal.mainCategory;
+            cardMeta.appendChild(catTag);
+        }
+
+        if (deal.salePrice) {
+            const priceTag = document.createElement('span');
+            priceTag.className = 'deal-card-tag price';
+            priceTag.textContent = deal.salePrice;
+            cardMeta.appendChild(priceTag);
+        }
+
+        if (deal.originalPrice) {
+            const origTag = document.createElement('span');
+            origTag.className = 'deal-card-tag original-price';
+            origTag.textContent = deal.originalPrice;
+            cardMeta.appendChild(origTag);
+        }
+
+        if (deal.store) {
+            const storeTag = document.createElement('span');
+            storeTag.className = 'deal-card-tag store';
+            storeTag.textContent = deal.store;
+            cardMeta.appendChild(storeTag);
+        }
+
+        card.appendChild(cardMeta);
+
+        // Notes
+        if (deal.notes) {
+            const cardNotes = document.createElement('div');
+            cardNotes.className = 'deal-card-notes';
+            cardNotes.textContent = deal.notes;
+            card.appendChild(cardNotes);
+        }
+
+        // Footer with date and sale period
+        const cardFooter = document.createElement('div');
+        cardFooter.className = 'deal-card-footer';
+        
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = deal.pubDate ? formatDate(deal.pubDate) : '';
+        cardFooter.appendChild(dateSpan);
+
+        if (deal.salePeriod) {
+            const periodSpan = document.createElement('span');
+            periodSpan.textContent = deal.salePeriod;
+            cardFooter.appendChild(periodSpan);
+        }
+
+        card.appendChild(cardFooter);
+        mobileFragment.appendChild(card);
     });
 
-    // Single DOM update instead of 16k+ individual updates
-    dealsTableBody.appendChild(fragment);
+    // Single DOM update
+    dealsTableBody.appendChild(tableFragment);
+    if (mobileCards) mobileCards.appendChild(mobileFragment);
 
     // Update pagination controls
     updatePaginationControls(totalPages);
