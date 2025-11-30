@@ -206,8 +206,9 @@ def extract_excel_deals(extract_dir: str) -> list:
             # Get other fields
             main_category = cell_values.get(f'A{row}', 'Uncategorized').strip()
             sub_category = cell_values.get(f'B{row}', '').strip()
-            sale_price = cell_values.get(f'D{row}', '').strip()
-            original_price = cell_values.get(f'E{row}', '').strip()
+            # Note: Column D is Original Price, Column E is Sale Price in the spreadsheet
+            original_price = cell_values.get(f'D{row}', '').strip()
+            sale_price = cell_values.get(f'E{row}', '').strip()
             store = cell_values.get(f'F{row}', '').strip()
             sale_period = cell_values.get(f'G{row}', '').strip()
             notes = cell_values.get(f'H{row}', '').strip()
