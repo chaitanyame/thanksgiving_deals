@@ -42,24 +42,40 @@
     --radius-full: 9999px;
 }
 
-/* Dark Theme */
+/* Dark Theme - Enhanced for better readability */
 [data-theme="dark"] {
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-tertiary: #334155;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --border-color: #334155;
-    --border-light: #1e293b;
-    --accent-light: rgba(99, 102, 241, 0.2);
-    --success-light: rgba(16, 185, 129, 0.2);
-    --warning-light: rgba(245, 158, 11, 0.2);
-    --danger-light: rgba(239, 68, 68, 0.2);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    --bg-primary: #0a0f1a;
+    --bg-secondary: #111827;
+    --bg-tertiary: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --border-light: #1f2937;
+    
+    /* Brighter accents for dark mode */
+    --accent-primary: #818cf8;
+    --accent-secondary: #a78bfa;
+    --accent-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+    --accent-light: rgba(129, 140, 248, 0.15);
+    
+    /* Brighter status colors for dark mode */
+    --success: #34d399;
+    --success-light: rgba(52, 211, 153, 0.15);
+    --warning: #fbbf24;
+    --warning-light: rgba(251, 191, 36, 0.15);
+    --danger: #f87171;
+    --danger-light: rgba(248, 113, 113, 0.15);
+    
+    /* Subtle glow shadows for dark mode */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    
+    /* Table row colors */
+    --row-hover: rgba(129, 140, 248, 0.08);
+    --row-alt: rgba(255, 255, 255, 0.02);
 }
 
 /* ==================== BASE STYLES ==================== */
@@ -1761,3 +1777,184 @@ footer a:hover {
         margin-left: auto;
     }
 }
+
+/* ==================== DARK MODE ENHANCEMENTS ==================== */
+/* Better contrast and visual polish for dark theme */
+
+[data-theme="dark"] .deals-table thead {
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+}
+
+[data-theme="dark"] .deals-table thead th {
+    color: #e5e7eb;
+    border-bottom: 2px solid #4b5563;
+}
+
+[data-theme="dark"] .deals-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+[data-theme="dark"] .deals-table tbody tr:hover {
+    background: rgba(129, 140, 248, 0.12);
+}
+
+[data-theme="dark"] .deals-table tbody td a {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .deals-table tbody td a:hover {
+    color: #bfdbfe;
+}
+
+[data-theme="dark"] .filters {
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .filter-group select,
+[data-theme="dark"] .filter-group input {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .filter-group select:hover,
+[data-theme="dark"] .filter-group input:hover {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+}
+
+[data-theme="dark"] .filter-group select:focus,
+[data-theme="dark"] .filter-group input:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
+}
+
+[data-theme="dark"] .filter-group input::placeholder {
+    color: #6b7280;
+}
+
+[data-theme="dark"] .stats-bar {
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .quick-filters {
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .quick-filter-btn {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .quick-filter-btn:hover {
+    background: #818cf8;
+    border-color: #818cf8;
+}
+
+[data-theme="dark"] .quick-filter-btn.active {
+    background: #818cf8;
+    border-color: #818cf8;
+    box-shadow: 0 4px 12px rgba(129, 140, 248, 0.4);
+}
+
+[data-theme="dark"] .pagination {
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .pagination-btn:disabled {
+    background: #1f2937;
+    color: #4b5563;
+}
+
+[data-theme="dark"] .sale-price {
+    color: #4ade80;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .original-price {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] footer {
+    background: linear-gradient(180deg, #111827 0%, #0a0f1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .dark-mode-toggle {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .dark-mode-toggle:hover {
+    border-color: #818cf8;
+    box-shadow: 0 4px 20px rgba(129, 140, 248, 0.3);
+}
+
+/* Enhanced mobile cards for dark mode */
+[data-theme="dark"] .deal-card {
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .deal-card:hover {
+    border-color: rgba(129, 140, 248, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(129, 140, 248, 0.1);
+}
+
+[data-theme="dark"] .deal-card-title a {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .deal-card-title a:hover {
+    color: #bfdbfe;
+}
+
+[data-theme="dark"] .deal-card-meta {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .copy-link-btn {
+    background: #374151;
+}
+
+[data-theme="dark"] .copy-link-btn:hover {
+    background: #818cf8;
+}
+
+[data-theme="dark"] .skeleton-card {
+    background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+    background-size: 200% 100%;
+}
+
+/* Improved select dropdown styling for dark mode */
+[data-theme="dark"] select option {
+    background: #1f2937;
+    color: #f3f4f6;
+}
+
+/* Better scrollbar for dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #111827;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
+}
+
