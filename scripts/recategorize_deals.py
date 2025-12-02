@@ -7,9 +7,18 @@ import json
 import sys
 from pathlib import Path
 from datetime import datetime
+import importlib.util
 
-# Import the enhanced categorize_item from sync_combined
-from sync_combined import categorize_item
+# Force fresh import of categorize_item from sync_combined to avoid module caching
+def load_categorize_item():
+    """Load categorize_item with fresh import to avoid Python module caching"""
+    script_path = Path(__file__).parent / 'sync_combined.py'
+    spec = importlib.util.spec_from_file_location("sync_combined_fresh", str(script_path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.categorize_item
+
+categorize_item = load_categorize_item()
 
 def recategorize_deals():
     """Load deals.json, recategorize all deals, and save back"""
