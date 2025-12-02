@@ -14,6 +14,28 @@ function decodeHTMLEntities(text) {
     return textarea.value;
 }
 
+// Helper function to calculate savings percentage
+function calculateSavings(originalPrice, salePrice) {
+    if (!originalPrice || !salePrice) return null;
+    
+    // Extract numeric values from price strings
+    const origMatch = originalPrice.match(/[\d,]+\.?\d*/);
+    const saleMatch = salePrice.match(/[\d,]+\.?\d*/);
+    
+    if (!origMatch || !saleMatch) return null;
+    
+    const orig = parseFloat(origMatch[0].replace(/,/g, ''));
+    const sale = parseFloat(saleMatch[0].replace(/,/g, ''));
+    
+    if (orig <= 0 || sale >= orig) return null;
+    
+    const savingsPercent = Math.round(((orig - sale) / orig) * 100);
+    
+    if (savingsPercent < 5) return null; // Don't show tiny discounts
+    
+    return `-${savingsPercent}%`;
+}
+
 // Virtual Scrolling State
 let virtualScrollEnabled = false;
 let rowHeight = 60; // Estimated row height in pixels
@@ -239,57 +261,66 @@ function buildCategoryIndex() {
 }
 
 /**
- * Populate main category filter (using pre-indexed data)
+ * Populate main category filter (using pre-indexed data) with deal counts
  */
 function populateMainCategoryFilter() {
     // Sort categories alphabetically
     const sortedCategories = Array.from(categoryIndex.mainCategories).sort();
 
     // Clear existing options (except "All Categories")
-    mainCategoryFilter.innerHTML = '<option value="">All Categories</option>';
+    mainCategoryFilter.innerHTML = `<option value="">All Categories (${allDeals.length.toLocaleString()})</option>`;
 
     // Add category options using DocumentFragment for batching
     const fragment = document.createDocumentFragment();
     sortedCategories.forEach(category => {
+        const count = (categoryIndex.byMainCategory[category] || []).length;
         const option = document.createElement('option');
         option.value = category;
-        option.textContent = decodeHTMLEntities(category);
+        option.textContent = `${decodeHTMLEntities(category)} (${count.toLocaleString()})`;
         fragment.appendChild(option);
     });
     mainCategoryFilter.appendChild(fragment);
 }
 
 /**
- * Populate sub category filter based on selected main category (using pre-indexed data)
+ * Populate sub category filter based on selected main category (using pre-indexed data) with deal counts
  */
 function populateSubCategoryFilter() {
     const selectedMainCategory = mainCategoryFilter.value;
-    const subCategories = new Set();
+    const subCategoryCounts = new Map();
 
     if (selectedMainCategory === '') {
-        // Show all sub categories
-        categoryIndex.subCategories.forEach(sub => subCategories.add(sub));
+        // Count all sub categories
+        allDeals.forEach(deal => {
+            if (deal.subCategory) {
+                subCategoryCounts.set(deal.subCategory, (subCategoryCounts.get(deal.subCategory) || 0) + 1);
+            }
+        });
     } else {
-        // Show sub categories for selected main category
+        // Count sub categories for selected main category
         const dealIndices = categoryIndex.byMainCategory[selectedMainCategory] || [];
         dealIndices.forEach(index => {
             const sub = allDeals[index].subCategory;
-            if (sub) subCategories.add(sub);
+            if (sub) {
+                subCategoryCounts.set(sub, (subCategoryCounts.get(sub) || 0) + 1);
+            }
         });
     }
 
     // Sort sub categories alphabetically
-    const sortedSubCategories = Array.from(subCategories).sort();
+    const sortedSubCategories = Array.from(subCategoryCounts.keys()).sort();
+    const totalCount = Array.from(subCategoryCounts.values()).reduce((a, b) => a + b, 0);
 
     // Clear existing options
-    subCategoryFilter.innerHTML = '<option value="">All Sub Categories</option>';
+    subCategoryFilter.innerHTML = `<option value="">All Sub Categories (${totalCount.toLocaleString()})</option>`;
 
     // Add sub category options using DocumentFragment
     const fragment = document.createDocumentFragment();
     sortedSubCategories.forEach(subCategory => {
+        const count = subCategoryCounts.get(subCategory) || 0;
         const option = document.createElement('option');
         option.value = subCategory;
-        option.textContent = decodeHTMLEntities(subCategory);
+        option.textContent = `${decodeHTMLEntities(subCategory)} (${count.toLocaleString()})`;
         fragment.appendChild(option);
     });
     subCategoryFilter.appendChild(fragment);
@@ -498,11 +529,27 @@ function renderDeals() {
         }
         row.appendChild(originalPriceCell);
 
-        // Sale Price
+        // Sale Price with savings badge
         const salePriceCell = document.createElement('td');
         if (deal.salePrice) {
-            salePriceCell.textContent = deal.salePrice;
-            salePriceCell.classList.add('sale-price');
+            const priceWrapper = document.createElement('div');
+            priceWrapper.className = 'price-wrapper';
+            
+            const priceSpan = document.createElement('span');
+            priceSpan.className = 'sale-price';
+            priceSpan.textContent = deal.salePrice;
+            priceWrapper.appendChild(priceSpan);
+            
+            // Calculate and show savings badge if both prices exist
+            const savings = calculateSavings(deal.originalPrice, deal.salePrice);
+            if (savings) {
+                const savingsBadge = document.createElement('span');
+                savingsBadge.className = 'savings-badge';
+                savingsBadge.textContent = savings;
+                priceWrapper.appendChild(savingsBadge);
+            }
+            
+            salePriceCell.appendChild(priceWrapper);
         }
         row.appendChild(salePriceCell);
 
@@ -602,6 +649,15 @@ function renderDeals() {
             priceTag.className = 'deal-card-tag price';
             priceTag.textContent = deal.salePrice;
             cardMeta.appendChild(priceTag);
+            
+            // Add savings badge on mobile cards too
+            const savings = calculateSavings(deal.originalPrice, deal.salePrice);
+            if (savings) {
+                const savingsTag = document.createElement('span');
+                savingsTag.className = 'deal-card-tag savings';
+                savingsTag.textContent = savings;
+                cardMeta.appendChild(savingsTag);
+            }
         }
 
         if (deal.originalPrice) {

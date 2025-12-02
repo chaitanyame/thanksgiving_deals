@@ -1958,3 +1958,206 @@ footer a:hover {
     background: #4b5563;
 }
 
+/* ==================== SAVINGS BADGES ==================== */
+.price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.savings-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.3px;
+    animation: savingsPulse 2s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+@keyframes savingsPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.deal-card-tag.savings {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-weight: 700;
+    animation: savingsPulse 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .savings-badge {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 0 12px rgba(248, 113, 113, 0.4);
+}
+
+[data-theme="dark"] .deal-card-tag.savings {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 0 12px rgba(248, 113, 113, 0.4);
+}
+
+/* ==================== IMPROVED MOBILE CARDS ==================== */
+@media (max-width: 768px) {
+    .deal-card {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-md);
+        border: none;
+        overflow: hidden;
+        position: relative;
+        animation: fadeIn 0.3s ease;
+        transition: all var(--transition-fast);
+    }
+    
+    .deal-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--accent-gradient);
+    }
+    
+    .deal-card:active {
+        transform: scale(0.98);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .deal-card-header {
+        padding: 16px 16px 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .deal-card-title {
+        flex: 1;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .deal-card-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .deal-card-title a:hover {
+        color: var(--accent-primary);
+    }
+    
+    .deal-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 16px 12px;
+        margin: 0;
+        border-top: none;
+    }
+    
+    .deal-card-tag {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .deal-card-tag.category {
+        background: var(--accent-light);
+        color: var(--accent-primary);
+    }
+    
+    .deal-card-tag.store {
+        background: var(--success-light);
+        color: var(--success);
+    }
+    
+    .deal-card-tag.price {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 6px 14px;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    .deal-card-tag.original-price {
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
+        text-decoration: line-through;
+        font-weight: 400;
+    }
+    
+    .deal-card-notes {
+        color: var(--warning);
+        font-style: italic;
+        font-size: 0.8rem;
+        margin: 0;
+        padding: 10px 16px;
+        background: var(--warning-light);
+        border-top: 1px solid var(--border-light);
+    }
+    
+    .deal-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        padding: 12px 16px;
+        background: var(--bg-tertiary);
+        border-top: 1px solid var(--border-light);
+    }
+    
+    /* Mobile cards with store brand color accent */
+    .deal-card[data-store]::before {
+        background: var(--store-accent, var(--accent-gradient));
+    }
+}
+
+/* Dark mode mobile card enhancements */
+[data-theme="dark"] .deal-card {
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .deal-card::before {
+    box-shadow: 0 2px 12px rgba(129, 140, 248, 0.3);
+}
+
+[data-theme="dark"] .deal-card-title a {
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .deal-card-title a:hover {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .deal-card-footer {
+    background: rgba(0, 0, 0, 0.2);
+    border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .deal-card-tag.price {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    box-shadow: 0 2px 12px rgba(52, 211, 153, 0.4);
+}
+
