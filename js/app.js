@@ -561,14 +561,6 @@ function renderDeals() {
         }
         row.appendChild(storeCell);
 
-        // Sale Period
-        const salePeriodCell = document.createElement('td');
-        if (deal.salePeriod) {
-            salePeriodCell.textContent = deal.salePeriod;
-            salePeriodCell.classList.add('sale-period');
-        }
-        row.appendChild(salePeriodCell);
-
         // Notes
         const notesCell = document.createElement('td');
         if (deal.notes) {
@@ -689,12 +681,6 @@ function renderDeals() {
         const dateSpan = document.createElement('span');
         dateSpan.textContent = deal.pubDate ? formatDate(deal.pubDate) : '';
         cardFooter.appendChild(dateSpan);
-
-        if (deal.salePeriod) {
-            const periodSpan = document.createElement('span');
-            periodSpan.textContent = deal.salePeriod;
-            cardFooter.appendChild(periodSpan);
-        }
 
         card.appendChild(cardFooter);
         mobileFragment.appendChild(card);
