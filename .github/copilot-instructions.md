@@ -2,21 +2,21 @@
 
 ## Project Architecture
 
-This is a **serverless static website** that auto-updates deal listings from Slickdeals RSS:
+This is a **serverless static website** that auto-updates deal listings from Slickdeals RSS and Google Sheets:
 
-- **Backend**: Python scraper (`scripts/sync_deals.py`) runs via GitHub Actions every 30 minutes
+- **Backend**: Python scraper (`scripts/sync_combined.py`) runs via GitHub Actions every 45 minutes
 - **Data Layer**: Single JSON file (`data/deals.json`) stores all deal data
 - **Frontend**: Vanilla JS (`js/app.js`) + HTML/CSS, hosted on GitHub Pages
 - **No database, no API server** - everything is static file-based
 
-The architecture is intentionally simple: RSS → Python → JSON → Static Site. All state persists in `deals.json` which gets committed to the repo.
+The architecture is intentionally simple: RSS + Sheets → Python → JSON → Static Site. All state persists in `deals.json` which gets committed to the repo.
 
 ## Key Components & Data Flow
 
-1. **GitHub Actions** (`.github/workflows/sync-deals.yml`) triggers `sync_deals.py` every 30 minutes
-2. **Scraper** (`scripts/sync_deals.py`) fetches RSS, categorizes deals, writes to `data/deals.json`
+1. **GitHub Actions** (`.github/workflows/sync-deals.yml`) triggers `sync_combined.py` every 45 minutes
+2. **Scraper** (`scripts/sync_combined.py`) fetches RSS + Google Sheets, merges and categorizes deals, writes to `data/deals.json`
 3. **Frontend** (`js/app.js`) loads JSON via fetch, renders filterable table
-4. **Categorization Logic** in `sync_deals.py::categorize_item()` uses keyword matching for 30+ categories
+4. **Categorization Logic** in `sync_combined.py::categorize_item()` uses keyword matching for 30+ categories
 
 ## Critical Developer Workflows
 
@@ -24,7 +24,7 @@ The architecture is intentionally simple: RSS → Python → JSON → Static Sit
 ```bash
 cd scripts
 pip install -r requirements.txt
-python sync_deals.py
+python sync_combined.py
 # Check data/deals.json was updated
 ```
 
@@ -46,7 +46,7 @@ Check `.github/workflows/sync-deals.yml` logs for Python errors. Common issues:
 ## Project-Specific Conventions
 
 ### Deal Categorization System
-- **Primary pattern**: Keyword matching in `categorize_item()` function (lines 60-295 in `sync_deals.py`)
+- **Primary pattern**: Keyword matching in `categorize_item()` function in `sync_combined.py`
 - **Structure**: Returns `{'main': str, 'sub': str}` tuple
 - **Adding categories**: Add new `has_any()` checks in `categorize_item()` with clear keyword lists
 - **Fallback**: Uncategorized deals get `{'main': 'Uncategorized', 'sub': ''}`
@@ -97,19 +97,19 @@ In-place array sorting on `filteredDeals` (see `sortDeals()` in `app.js`). Price
 ## Common Modification Patterns
 
 ### Adding a New Category
-1. Edit `scripts/sync_deals.py::categorize_item()`
+1. Edit `scripts/sync_combined.py::categorize_item()`
 2. Add keyword check using `has_any(['keyword1', 'keyword2'])`
 3. Return `{'main': 'Category Name', 'sub': 'Subcategory'}`
-4. Test locally with `python scripts/sync_deals.py`
+4. Test locally with `python scripts/sync_combined.py`
 5. Verify frontend dropdown populates correctly
 
 ### Changing Update Frequency
 Edit `.github/workflows/sync-deals.yml` cron expression:
-- Current: `*/30 * * * *` (every 30 minutes)
+- Current: `*/45 * * * *` (every 45 minutes)
 - Example: `0 */6 * * *` (every 6 hours)
 
 ### Adding Store Detection
-Edit `detect_store()` in `sync_deals.py`. Currently only detects Amazon via lowercase keyword matching. Add similar patterns for other stores.
+Edit `detect_store()` in `sync_combined.py`. Currently only detects Amazon via lowercase keyword matching. Add similar patterns for other stores.
 
 ## Dependencies & Versions
 
@@ -134,6 +134,6 @@ Edit `detect_store()` in `sync_deals.py`. Currently only detects Amazon via lowe
 ## References
 
 - **Main documentation**: `README.md` (setup, features, troubleshooting)
-- **Categorization logic**: `scripts/sync_deals.py` lines 60-295
+- **Categorization logic**: `scripts/sync_combined.py` `categorize_item()` function
 - **Frontend rendering**: `js/app.js` `renderDeals()` function
 - **Workflow definition**: `.github/workflows/sync-deals.yml`

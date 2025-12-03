@@ -1,6 +1,6 @@
 # Slickdeals Black Friday Deals Tracker
 
-A public website that automatically tracks and displays the latest Black Friday deals from Slickdeals frontpage, updated every 30 minutes.
+A public website that automatically tracks and displays the latest Black Friday deals from Slickdeals frontpage and curated Google Sheets data, updated every 45 minutes.
 
 ## Overview
 
@@ -8,8 +8,10 @@ This project converts a Google Apps Script that synced Slickdeals RSS to Google 
 
 ### How It Works
 
-1. **GitHub Actions** runs every 30 minutes and:
+1. **GitHub Actions** runs every 45 minutes and:
    - Fetches the latest deals from Slickdeals RSS feed
+   - Imports curated deals from Google Sheets (via CSV export)
+   - Merges both sources, deduplicating by deal ID
    - Categorizes each deal using intelligent keyword matching
    - Extracts pricing and store information
    - Saves all deals to `data/deals.json`
@@ -22,7 +24,7 @@ This project converts a Google Apps Script that synced Slickdeals RSS to Google 
 
 ### Key Features
 
-- ✅ **Auto-updating**: Fresh deals every 30 minutes
+- ✅ **Auto-updating**: Fresh deals every 45 minutes
 - ✅ **No server needed**: Runs on GitHub Actions + GitHub Pages (free)
 - ✅ **Categorized**: 30+ categories with intelligent keyword matching
 - ✅ **Searchable**: Filter by main category, sub-category, or search text
@@ -34,20 +36,28 @@ This project converts a Google Apps Script that synced Slickdeals RSS to Google 
 ```
 blackfriday/
 ├── .github/
-│   └── workflows/
-│       └── sync-deals.yml          # GitHub Actions workflow
+│   ├── workflows/
+│   │   └── sync-deals.yml          # GitHub Actions workflow
+│   └── copilot-instructions.md     # AI coding assistant guide
 ├── scripts/
-│   ├── sync_deals.py              # Python scraper script
+│   ├── sync_combined.py            # Main Python scraper (RSS + Sheets)
+│   ├── import_from_sheet.py        # Google Sheets import utility
+│   ├── recategorize_deals.py       # Deal re-categorization utility
+│   ├── fix_search_urls.py          # URL fixing utility
+│   ├── extract_urls_from_excel.py  # Excel URL extraction utility
 │   └── requirements.txt            # Python dependencies
 ├── css/
-│   └── styles.css                 # Website styling
+│   └── styles.css                  # Website styling
 ├── js/
-│   └── app.js                     # Client-side logic
+│   └── app.js                      # Client-side logic
 ├── data/
-│   └── deals.json                 # Generated deal data
-├── index.html                     # Main webpage
-├── .gitignore                     # Git ignore rules
-└── README.md                      # This file
+│   └── deals.json                  # Generated deal data
+├── index.html                      # Main webpage
+├── docker-compose.yml              # Docker local dev setup
+├── Dockerfile                      # Docker container config
+├── DOCKER.md                       # Docker setup guide
+├── .gitignore                      # Git ignore rules
+└── README.md                       # This file
 ```
 
 ## Setup Instructions
@@ -108,7 +118,7 @@ Your site will be available at: `https://YOUR_USERNAME.github.io/blackfriday-dea
 
 2. Run the script:
    ```bash
-   python scripts/sync_deals.py
+   python scripts/sync_combined.py
    ```
 
 3. Open `index.html` in your browser to test the website
