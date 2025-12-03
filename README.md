@@ -1,10 +1,17 @@
 # Slickdeals Black Friday Deals Tracker
 
-A public website that automatically tracks and displays the latest Black Friday deals from Slickdeals frontpage and curated Google Sheets data, updated every 45 minutes.
+[![GitHub Actions](https://github.com/chaitanyame/thanksgiving_deals/actions/workflows/sync-deals.yml/badge.svg)](https://github.com/chaitanyame/thanksgiving_deals/actions)
+[![GitHub Pages](https://img.shields.io/badge/demo-live-brightgreen)](https://chaitanyame.github.io/thanksgiving_deals/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/chaitanyame/thanksgiving_deals/pulls)
+
+A public, open-source website that automatically tracks and displays the latest Black Friday deals from Slickdeals frontpage and curated Google Sheets data, updated every 45 minutes.
+
+🔗 **Live Site:** [https://chaitanyame.github.io/thanksgiving_deals/](https://chaitanyame.github.io/thanksgiving_deals/)
 
 ## Overview
 
-This project converts a Google Apps Script that synced Slickdeals RSS to Google Sheets into a public GitHub Pages website that anyone can visit to browse current deals.
+This open-source project provides a free, serverless deal tracking website that anyone can fork, customize, and deploy. It aggregates deals from Slickdeals RSS feeds and optional Google Sheets data into a searchable, filterable interface.
 
 ### How It Works
 
@@ -26,10 +33,13 @@ This project converts a Google Apps Script that synced Slickdeals RSS to Google 
 
 - ✅ **Auto-updating**: Fresh deals every 45 minutes
 - ✅ **No server needed**: Runs on GitHub Actions + GitHub Pages (free)
+- ✅ **Dual data sources**: Combines RSS feed + Google Sheets for comprehensive coverage
 - ✅ **Categorized**: 30+ categories with intelligent keyword matching
 - ✅ **Searchable**: Filter by main category, sub-category, or search text
-- ✅ **Mobile-friendly**: Responsive design works on all devices
-- ✅ **Tracking**: All links include Slickdeals tracking parameters
+- ✅ **Dark/Light mode**: Toggle between themes with persistent preference
+- ✅ **Mobile-friendly**: Responsive card-based design on mobile devices
+- ✅ **Savings badges**: Shows percentage off for deals with original prices
+- ✅ **100% Open Source**: Fork, customize, and deploy your own version
 
 ## Project Structure
 
@@ -187,7 +197,7 @@ See [cron syntax](https://crontab.guru) for more options.
 
 ### Add More Categories
 
-Edit `scripts/sync_deals.py` and add more keyword rules in the `categorize_item()` function.
+Edit `scripts/sync_combined.py` and add more keyword rules in the `categorize_item()` function.
 
 ### Customize Styling
 
@@ -212,17 +222,47 @@ Edit `css/styles.css` to change colors, fonts, and layout.
 
 ## Contributing
 
-To improve the project:
+We welcome contributions from the community! Here's how you can help:
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test locally
-5. Submit a pull request
+### Ways to Contribute
+
+- 🐛 **Report bugs**: Open an issue describing the problem
+- 💡 **Suggest features**: Share ideas for improvements
+- 🔧 **Submit PRs**: Fix bugs or add new features
+- 📝 **Improve docs**: Help make documentation clearer
+- 🏷️ **Add categories**: Improve deal categorization logic
+
+### Development Workflow
+
+1. **Fork** the repository
+2. **Clone** your fork locally
+3. **Create a branch**: `git checkout -b feature/your-feature-name`
+4. **Make changes** and test locally
+5. **Commit** with clear messages: `git commit -m "Add: description of change"`
+6. **Push** to your fork: `git push origin feature/your-feature-name`
+7. **Open a Pull Request** against `main`
+
+### Code Style
+
+- Python: Follow PEP 8 guidelines
+- JavaScript: Use ES6+ syntax, no external dependencies
+- CSS: Use CSS custom properties for theming
+- Commits: Use conventional commit messages (Add:, Fix:, Update:, etc.)
+
+### Testing Your Changes
+
+```bash
+# Test the scraper
+python scripts/sync_combined.py
+
+# Test the website locally
+python -m http.server 8000
+# Open http://localhost:8000
+```
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is open source and available under the [MIT License](LICENSE).
 
 ## Disclaimer
 
@@ -231,10 +271,22 @@ This project is not affiliated with Slickdeals. The `&sdtrk=bfsheet` parameter i
 ## Support
 
 For issues or questions:
-1. Check existing [GitHub Issues](https://github.com/YOUR_USERNAME/blackfriday-deals/issues)
+1. Check existing [GitHub Issues](https://github.com/chaitanyame/thanksgiving_deals/issues)
 2. Create a new issue with details about the problem
 3. Include steps to reproduce if applicable
+
+## Acknowledgments
+
+- Deal data sourced from [Slickdeals](https://slickdeals.net) RSS feeds
+- Hosted on [GitHub Pages](https://pages.github.com)
+- Automated with [GitHub Actions](https://github.com/features/actions)
+
+## Star History
+
+If you find this project useful, please consider giving it a ⭐ on GitHub!
 
 ---
 
 **Happy deal hunting!** 🎉
+
+*Made with ❤️ by the open source community*

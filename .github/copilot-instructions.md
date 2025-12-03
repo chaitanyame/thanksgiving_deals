@@ -1,5 +1,9 @@
 # Slickdeals Black Friday Deals Tracker - AI Agent Guide
 
+> **Repository**: [github.com/chaitanyame/thanksgiving_deals](https://github.com/chaitanyame/thanksgiving_deals)  
+> **License**: MIT  
+> **Live Site**: [chaitanyame.github.io/thanksgiving_deals](https://chaitanyame.github.io/thanksgiving_deals/)
+
 ## Project Architecture
 
 This is a **serverless static website** that auto-updates deal listings from Slickdeals RSS and Google Sheets:
@@ -36,7 +40,7 @@ python -m http.server 8000
 ```
 
 ### Manual Workflow Trigger
-Go to GitHub Actions → "Sync Slickdeals Deals" → "Run workflow" to test automation without waiting 30 minutes.
+Go to GitHub Actions → "Sync Slickdeals Deals" → "Run workflow" to test automation without waiting 45 minutes.
 
 ### Debugging Failed Workflows
 Check `.github/workflows/sync-deals.yml` logs for Python errors. Common issues:
