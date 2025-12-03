@@ -224,9 +224,17 @@ Edit `css/styles.css` to change colors, fonts, and layout.
 
 We welcome contributions from the community! Here's how you can help:
 
+### How Open Source Contributions Work
+
+Since this is a public repository:
+- **You cannot push directly** to `main` - only maintainers have write access
+- **Fork the repo** to your own GitHub account
+- **Submit Pull Requests** which will be reviewed and merged by maintainers
+- The automated deal sync runs via GitHub Actions and pushes updates automatically
+
 ### Ways to Contribute
 
-- 🐛 **Report bugs**: Open an issue describing the problem
+- 🐛 **Report bugs**: [Open an issue](https://github.com/chaitanyame/thanksgiving_deals/issues/new) describing the problem
 - 💡 **Suggest features**: Share ideas for improvements
 - 🔧 **Submit PRs**: Fix bugs or add new features
 - 📝 **Improve docs**: Help make documentation clearer
@@ -234,13 +242,30 @@ We welcome contributions from the community! Here's how you can help:
 
 ### Development Workflow
 
-1. **Fork** the repository
-2. **Clone** your fork locally
-3. **Create a branch**: `git checkout -b feature/your-feature-name`
-4. **Make changes** and test locally
-5. **Commit** with clear messages: `git commit -m "Add: description of change"`
-6. **Push** to your fork: `git push origin feature/your-feature-name`
-7. **Open a Pull Request** against `main`
+1. **Fork** the repository (click "Fork" button on GitHub)
+2. **Clone** your fork locally:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/thanksgiving_deals.git
+   cd thanksgiving_deals
+   ```
+3. **Add upstream remote**:
+   ```bash
+   git remote add upstream https://github.com/chaitanyame/thanksgiving_deals.git
+   ```
+4. **Create a branch**: 
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+5. **Make changes** and test locally
+6. **Commit** with clear messages: 
+   ```bash
+   git commit -m "Add: description of change"
+   ```
+7. **Push** to your fork: 
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+8. **Open a Pull Request** against `main` on the original repo
 
 ### Code Style
 
@@ -259,6 +284,8 @@ python scripts/sync_combined.py
 python -m http.server 8000
 # Open http://localhost:8000
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## License
 
