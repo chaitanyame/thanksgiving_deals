@@ -15,3 +15,8 @@ venv/
 *.swo
 *~
 .cache/
+
+# Project-specific
+temp_excel/
+*.backup
+fix_urls_output.log
