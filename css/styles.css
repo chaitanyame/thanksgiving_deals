@@ -120,16 +120,22 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-.dark-mode-toggle .icon-moon {
+/* Light mode: show moon (click to go dark) */
+.dark-mode-toggle .icon-sun {
     display: none;
 }
 
+.dark-mode-toggle .icon-moon {
+    display: block;
+}
+
+/* Dark mode: show sun (click to go light) */
 [data-theme="dark"] .dark-mode-toggle .icon-sun {
-    display: none;
+    display: block;
 }
 
 [data-theme="dark"] .dark-mode-toggle .icon-moon {
-    display: block;
+    display: none;
 }
 
 /* ==================== CONTAINER ==================== */
