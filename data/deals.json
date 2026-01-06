@@ -1,6 +1,45 @@
 {
-  "lastUpdated": "2026-01-06T16:24:38.910065Z",
+  "lastUpdated": "2026-01-06T16:43:35.844041Z",
   "deals": [
+    {
+      "id": "slickdeals-f19066279",
+      "title": "Amazon: Savings on Select Household Goods $15 Credit w/ $50+ Purchase + Free Shipping",
+      "link": "https://slickdeals.net/f/19066279-15-credit-when-you-spend-50-on-select-household-items-at-amazon?utm_source=rss&utm_content=fp&utm_medium=RSS2&sdtrk=bfsheet",
+      "mainCategory": "Grocery",
+      "subCategory": "Household Goods",
+      "salePrice": "$15",
+      "originalPrice": "",
+      "store": "Amazon",
+      "salePeriod": "",
+      "notes": "",
+      "pubDate": "2026-01-06T16:37:09Z"
+    },
+    {
+      "id": "slickdeals-f19046317",
+      "title": "Amazon Essentials Men's Short-Sleeve Poplin Shirt (various) $8.95",
+      "link": "https://slickdeals.net/f/19046317-8-95-amazon-essentials-men-s-regular-fit-short-sleeve-poplin-shirt-at-amazon?utm_source=rss&utm_content=fp&utm_medium=RSS2&sdtrk=bfsheet",
+      "mainCategory": "Clothing & Accessories",
+      "subCategory": "Apparel",
+      "salePrice": "$8.95",
+      "originalPrice": "",
+      "store": "Amazon",
+      "salePeriod": "",
+      "notes": "",
+      "pubDate": "2026-01-06T16:35:45Z"
+    },
+    {
+      "id": "slickdeals-f19063063",
+      "title": "2-pk LISEN 15W MagSafe Car Vent Mount Chargers w/ 2-pk USB-A to USB-C Cables $16.05",
+      "link": "https://slickdeals.net/f/19063063-2-pack-lisen-15w-magsafe-car-vent-mount-chargers-w-2-pack-usb-a-to-usb-c-cables-16-06-free-shipping-w-prime-or-on-35?utm_source=rss&utm_content=fp&utm_medium=RSS2&sdtrk=bfsheet",
+      "mainCategory": "Electronics",
+      "subCategory": "Chargers & Power Banks",
+      "salePrice": "$16.05",
+      "originalPrice": "",
+      "store": "",
+      "salePeriod": "",
+      "notes": "",
+      "pubDate": "2026-01-06T16:30:39Z"
+    },
     {
       "id": "slickdeals-f19065154",
       "title": "12-Pairs Hanes Men's Double Tough Black Socks (Ankle or Crew) $9.05",
